@@ -1,0 +1,4 @@
+"It's wrong" bugs
+    -Gaussian filter does not work
+
+

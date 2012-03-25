@@ -1,0 +1,38 @@
+TODO:
+
+    -Pass a separate RNG to each thread and make thread safe!
+    -TODO: Pass ones own RNG to each thread
+    -Add atomics
+    -Redo pfm IO code
+    -Work on thread contension issues
+
+    Include renderertask for adding sample
+    code atomics and lock
+
+
+    -TODO: DEbug both camera constructors (only 1 works)
+    -Figure out y flip issue with cornell box
+
+    -Get object IDs on all objects, make a debug integrator for viewing them
+
+    -Cleanup bbox code
+
+    -Make better visibility testing interface in light code
+
+    -Finish spectrum INPUT and test
+
+
+    -Issues with rotation from vector A to vector B, seen in the Plane class
+
+    -Solve the issues with Gauss algo
+    -Solve linear solve problems
+    -Solve matrix invert
+
+    -Camera class
+    -Write code generation stuff that allows us to automatically include all test* files in test.cpp
+    -Scaled partial pivoting in gauss elim
+    -Include more integrators and interplation schemes in Spectrum.h
+    -Remove all TODOs, including the song DL one, from files
+    -Write code to transform Normals and Vectors
+    -Write ==, !=, and = for all prim classes
+    -Remove CImg stuff so clang complete can work
