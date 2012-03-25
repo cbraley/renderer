@@ -6,6 +6,7 @@
 #include <cmath>
 //--
 #include "Assert.h"
+#include "Constants.h"
 
 
 /**
@@ -109,8 +110,24 @@ public:
      *  by using the dot product.  Returns result in radians!
      *
      *  If both vectors are already normalized, this wastes cycles.
+     *
+     *  Note that using acos( (v1 dot v2)  / (|v1| |v2|) ) is NOT a good approach!  This
+     *  is because the range of acos is [-1,1], and due to numerical issues v1 dot v2 will often
+     *  be nearly -1 or 1!
+     *
+     *  See here for a numerically well behaved way to implementt he angle between two vectors:
+     *  http://www.plunk.org/~hatch/rightway.php
+     *  Credit goes to the authors of the "Mitsuba" renderer whose source code pointed me to this resource.
      */
     float angle(const Vector& b)const;
+
+    /**
+     *  Cmpute the angle between two pre-normalized vectors.  
+     *  Not computed in the naive way, see the comments on the "angle" method.
+     *
+     *  Both *this and b MUST be normalized prior to calling this function.
+     */
+    float angleNormalized(const Vector& b)const;
 
     const float& operator[](int i)const;
 
@@ -236,6 +253,11 @@ inline Vector& Vector::operator-=(const Vector& b){
 }
 
 inline float Vector::angle(const Vector& b)const{
+
+    //My original implmentation used clamping here...however,
+    //clamping is not a good apprach!
+    //http://www.plunk.org/~hatch/rightway.php
+    /*
     const float den = magnitude() * b.magnitude();
     const float dp = dot(b);
     float x = dp/den;
@@ -243,6 +265,23 @@ inline float Vector::angle(const Vector& b)const{
     const float ret = acos(x);
     Assert(ret == ret);
     return ret;
+    */
+
+    const Vector temp1 =   getNormalized();
+    const Vector temp2 = b.getNormalized();
+    return temp1.angleNormalized(temp2);
+}
+
+
+inline float Vector::angleNormalized(const Vector& b)const{
+    const float dp = dot(b);
+    if(dp < 0.0f){
+        const Vector tempVec(-x - b.x, -y - b.y, -z - b.z);
+        return PI_FLOAT - 2.0f * asin(tempVec.magnitude() * 0.5f);
+    }else{
+        const Vector tempVec(x - b.x, y - b.y, z - b.z);
+        return 2.0f * asin(tempVec.magnitude() * 0.5f);
+    }
 }
 
 inline const float& Vector::operator[](int i)const{

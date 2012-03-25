@@ -146,6 +146,7 @@ set(GUI_CORE_SOURCES ${ALL_SOURCE_FILES})
 list(REMOVE_ITEM GUI_CORE_SOURCES /home/cab6fh/Documents/Projects/Render_new/src/main.cpp) #TODO: Unhardcode!
 list(REMOVE_ITEM GUI_CORE_SOURCES ~/Documents/Projects/Render_new/src/main.cpp) #TODO: Unhardcode!
 list(REMOVE_ITEM GUI_CORE_SOURCES /home/cbraley/Documents/Projects/Render_1/src/main.cpp) #TODO: Unhardcode!
+list(REMOVE_ITEM GUI_CORE_SOURCES /home/cbraley/Documents/Projects/git_ren/src/main.cpp) #TODO: Unhardcode!
 
 add_subdirectory(gui)
 
