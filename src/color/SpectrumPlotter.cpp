@@ -10,7 +10,7 @@ namespace SpectrumPlotter{
 
 SpectrumPlotData::SpectrumPlotData(const Spectrum& s, const std::string& name) :
     data(s), specName(name),
-    lineWidth(2), useDfltColor(true)
+    lineWidth(3), useDfltColor(true)
 {}
 
 
@@ -20,7 +20,7 @@ PlotStyle::PlotStyle(const std::string& plotTitle) :
     title(plotTitle),
     xlabel("Wavelength (nm)"), ylabel(""),
     useGrid(true), nmMin(400), nmMax(720),
-    sampleRate(1.0f)
+    sampleRate(0.5f)
 {}
 
 
@@ -58,11 +58,12 @@ std::string getGNUPlotCommands(
     //The plot line
     ss << "plot ";
     for(size_t i = 0; i < toPlot.size(); i++){
-        ss << " '-' with lines title \"" << toPlot[i].specName << "\" ls " << i+1;
+        ss << " '-' with lines title \"" << toPlot[i].specName << "\" ls " << i+1 << " ";
         if(i != toPlot.size()-1){
             ss << ", ";
         }
     }
+    ss << std::endl;
 
     //The raw data
     for(size_t i = 0; i < toPlot.size(); i++){

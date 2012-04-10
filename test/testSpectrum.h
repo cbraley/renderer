@@ -33,6 +33,7 @@ SUITE(SpectrumTests){
             Spectrum(Spectrum::CIE_Z_2_DEG),
             "Z CMF - 2 Degree"));
 
+        /*
         pd.push_back(SpectrumPlotData(
             Spectrum(Spectrum::CIE_X_10_DEG),
             "X CMF - 10 Degree"));
@@ -42,7 +43,7 @@ SUITE(SpectrumTests){
         pd.push_back(SpectrumPlotData(
             Spectrum(Spectrum::CIE_Z_10_DEG),
             "Z CMF - 10 Degree"));
-        
+        */
 
 
         bool ok = writeGNUPlotCommandsToFile(pd,ps,
