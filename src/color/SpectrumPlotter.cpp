@@ -2,6 +2,7 @@
 //--
 #include <sstream>
 #include <fstream>
+#include <limits>
 //--
 #include "ColorUtils.h"
 #include "Assert.h"
@@ -20,7 +21,7 @@ PlotStyle::PlotStyle(const std::string& plotTitle) :
     title(plotTitle),
     xlabel("Wavelength (nm)"), ylabel(""),
     useGrid(true), nmMin(400), nmMax(720),
-    sampleRate(0.5f)
+    sampleRate(2.0f)
 {}
 
 
@@ -32,6 +33,9 @@ std::string getGNUPlotCommands(
     Assert(ps.sampleRate > 0.0f);
 
     std::stringstream ss;
+
+    //GNUPlot does not like scientific notation
+    ss.precision(std::numeric_limits<float>::digits10);
 
     //Setup main look of plot
     ss << "set title \""  << ps.title  << "\"" << std::endl;
