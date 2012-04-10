@@ -19,6 +19,10 @@
 #include <stdint.h>
 #include <inttypes.h>
 
+//TODO: This was added by me...why isn't it in there?
+#undef UINT32_C
+#define UINT32_C(c) c ## UL
+
 #define TINYMT32_MEXP 127
 #define TINYMT32_SH0 1
 #define TINYMT32_SH1 10

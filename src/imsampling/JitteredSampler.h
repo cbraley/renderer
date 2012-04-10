@@ -2,11 +2,12 @@
 #define JITTERED_SAMPLER_H
 
 #include "ImageSampler.h"
+#include "RNG.h"
 
 class JitteredSampler : public ImageSampler{
 protected:
     float jitX, jitY; //How much to jitter in each direction
-    
+    RNG rng;
 public:
    
     /**

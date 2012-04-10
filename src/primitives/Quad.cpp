@@ -6,7 +6,7 @@
 #include "Assert.h"
 #include "GeomUtils.h"
 #include "Triangle.h"
-#include "RNGs.h"
+#include "RNG.h"
 
 //Intersection epsilon
 static const float QUAD_EPSILON = 10e-6;
@@ -204,9 +204,11 @@ float Quad::surfaceArea()const{
 Point Quad::randomPt()const{
     Vector u = v_10 - v_00;
     Vector v = v_01 - v_00;
+    
+    RNG rng; //TODO: Somehow factor out this stuff
 
-    const float randU = RNG::randomFloat(0.0f, 1.0f);
-    const float randV = RNG::randomFloat(0.0f, 1.0f);
+    const float randU = rng.randomFloatOC(0.0f, 1.0f);
+    const float randV = rng.randomFloatOC(0.0f, 1.0f);
 
     return v_00 +  (randU * u) + (randV * v);
 }

@@ -25,6 +25,7 @@
 #include "Quad.h"
 #include "Triangle.h"
 #include "Scene.h"
+#include "RNG.h"
 
 #include "ParallelRenderer.h"
 
@@ -57,7 +58,6 @@ std::vector<Light*> createLightAtPoint(const Point& p, float div){
 
 
 int main(int argc, char** argv){
-    RNG::initializeRNGs(false); //false = use stable seed
 
     //Read command line params
     if(argc < 7){

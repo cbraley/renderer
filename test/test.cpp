@@ -14,9 +14,9 @@
 #include "testSphere.h"
 #include "testSpectraCompare.h"
 #include "testMatrixDenseKS.h"
-#include "RNGs.h"
 #include "testBoundingBox.h"
 #include "testBRDFGeom.h"
+#include "testRNG.h"
 //--
 #include "CustomTestReporter.h"
 
@@ -25,8 +25,6 @@ using namespace UnitTest;
 int main(){
     std::cout.precision( std::numeric_limits<double>::digits10 );
     std::cerr.precision( std::numeric_limits<double>::digits10 );
-
-    RNG::initializeRNGs(); //Seed RNG
 
     //walk list of all tests, add those with a name that
     //matches one of the arguments  to a new TestList

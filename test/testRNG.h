@@ -15,7 +15,7 @@ SUITE(RNG){
     TEST(RNGBasic){
         RNG rng1;
         RNG rng2;
-        const int NUM_TESTS = 1e10;
+        const int NUM_TESTS = 100;
         float roc1range[2] = {-FLT_MAX, FLT_MAX};
         float roc2range[2] = {-FLT_MAX, FLT_MAX};
         float roo1range[2] = {-FLT_MAX, FLT_MAX};
@@ -25,10 +25,18 @@ SUITE(RNG){
             float roc2 = rng2.randomFloatOC();
             float roo1 = rng1.randomFloatOO();
             float roo2 = rng2.randomFloatOO();
+
             roc1range[0] = std::max<float>(roc1range[0], roc1);
             roc1range[1] = std::min<float>(roc1range[1], roc1);
+
             roc2range[0] = std::max<float>(roc2range[0], roc2);
             roc2range[1] = std::min<float>(roc2range[1], roc2);
+
+            roo1range[0] = std::max<float>(roo1range[0], roo1);
+            roo1range[1] = std::min<float>(roo1range[1], roo1);
+
+            roo2range[0] = std::max<float>(roo2range[0], roo2);
+            roo2range[1] = std::min<float>(roo2range[1], roo2);
         }
 
         CHECK(roc1range[0] > 0.0f && roc1range[1] <= 1.0f);
@@ -38,7 +46,7 @@ SUITE(RNG){
 
         CHECK(roc1range[0] != roc1range[1]);
         CHECK(roc2range[0] != roc2range[1]);
-        CHECK(roo1range[0] != ro1range[1]);
+        CHECK(roo1range[0] != roo1range[1]);
         CHECK(roo2range[0] != roo2range[1]);
     }
 }

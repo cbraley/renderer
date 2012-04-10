@@ -5,7 +5,6 @@
 #include "gui.h"
 //--
 #include "ImageTypes.h"
-#include "RNGs.h"
 #include "Assert.h"
 #include "ImageIO.h"
 
@@ -54,7 +53,6 @@ void imageTst(HDRImage* im, int numTests = 50000){
 */
 
 int main(int argc, char** argv){
-    RNG::initializeRNGs();
     QApplication app(argc, argv);
     GUI gui;
     gui.show();

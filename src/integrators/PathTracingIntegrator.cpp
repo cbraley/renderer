@@ -1,7 +1,6 @@
 #include "PathTracingIntegrator.h"
 //--
 #include "Assert.h"
-#include "RNGs.h"
 #include "GeomUtils.h"
 #include "IntegratorHelpers.h"
 

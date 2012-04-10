@@ -1,7 +1,6 @@
 #include "Scene.h"
 //--
 #include "Assert.h"
-#include "RNGs.h"
 
 void Scene::computeBound(){
     size_t M = accel->getNumShapes();
@@ -41,7 +40,10 @@ Light* Scene::sampleLightsBasedOnPower()const{
 }
 
 Light* Scene::sampleLightsUniform()const{
-    return lights[RNG::randomInt(0, lights.size())];
+    Assert(false);
+    //TODO: Implement
+    return NULL;
+//    return lights[RNG::randomInt(0, lights.size())];
 }
 
 

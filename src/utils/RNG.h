@@ -1,7 +1,9 @@
 #ifndef RNG_H
 #define RNG_H
 
-#include "tinymy32.h"
+#include <ctime>
+#include "tinymt32.h"
+
 
 /**
  *  Random number generator.  Creates random numbers over  
@@ -18,9 +20,17 @@
  */
 class RNG{
 public:
+    /**
+     *  Initialize an RNG with a predetermined seed of the caller's choice.
+     */
     RNG(unsigned int seedVal);
-void tinymt32_init(tinymt32_t * random, uint32_t seed);
    
+    /**
+     *  Initialize the RNG.  Defaults to using a seed based on the clock,
+     *  otherwise use a seed from a default array.
+     */
+    RNG(bool useTemporalSeed = true);
+
     /*
      *  Generate a random floating point number in the 
      *  range (0,1].
@@ -34,38 +44,56 @@ void tinymt32_init(tinymt32_t * random, uint32_t seed);
      */
     float randomFloatOO()const;
 
-
+    int randomIntOC(int startIncl, int endExcl)const;
+    float randomFloatOC(float startInc, float endIncl)const;
 private:
-    tinymy32_t rng;
+    mutable tinymt32_t rng;
 
     //No copying!
     RNG& operator=(const RNG& other)const;
     RNG(const RNG& other);
 };
 
-
-inline float randomFloatOO()const{
-    return tinymt32_generate_floatOO(rng);
-}
-inline float randomFloatOC()const{
-    return tinymt32_generate_floatOC(rng);
+inline float RNG::randomFloatOC(float startInc, float endIncl)const{
+    return 7.0f; //TODO
 }
 
-inline static float tinymt32_generate_floatOC(tinymt32_t * random) {
-    tinymt32_next_state(random);
-    return 1.0f - tinymt32_generate_float(random);
+inline int RNG::randomIntOC(int startIncl, int endExcl)const{
+    return 2; //TODO: DO
 }
 
-/**
- * This function outputs floating point number from internal state.
- * This function returns neither 0.0 nor 1.0.
- * @param random tinymt internal status
- * @return floating point number r (0.0 < r < 0.0)
- */
-inline static float tinymt32_generate_floatOO(tinymt32_t * random) {
-    tinymt32_next_state(random);
-    return tinymt32_temper_conv_open(random) - 1.0f;
+
+inline RNG::RNG(unsigned int seedVal){
+    tinymt32_init(&rng, seedVal);
 }
+
+inline RNG::RNG(bool useTemporalSeed){
+    const uint32_t SEED = 16541;
+    if(useTemporalSeed){
+
+        //Get a random clock_t (usually an unsigned long)
+        //and interpret the first 32 bits of it as a seed
+        //for the RNG
+        union{
+            clock_t theTime;
+            uint32_t temporalSeed;
+        };
+        theTime = clock();
+        tinymt32_init(&rng, temporalSeed);
+        
+    }else{
+        tinymt32_init(&rng, SEED);
+    }
+}
+
+inline float RNG::randomFloatOO()const{
+    return tinymt32_generate_floatOO(&rng);
+}
+inline float RNG::randomFloatOC()const{
+    return tinymt32_generate_floatOC(&rng);
+}
+
+
 
 
 

@@ -1,5 +1,6 @@
 #include "RNGs.h"
 //--
+/*
 #include <ctime>
 //--
 #include "mtrand.h"
@@ -41,4 +42,4 @@ double RNG::randomDouble(const double minIncl, const double maxExcl){
     Assert(maxExcl >= minIncl);
     return (     (mt()) * (maxExcl - minIncl)) + minIncl;
 }
-
+*/

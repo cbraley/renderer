@@ -3,7 +3,7 @@
 
 #include "Point.h"
 #include "Vector.h"
-#include "RNGs.h"
+#include "RNG.h"
 //--
 #include <cmath>
 
@@ -75,8 +75,10 @@ namespace GeomUtils{
     inline Vector vectorFromNormal(const Normal& n){ return Vector(n.x, n.y, n.z); }
 
     inline Vector randomVecOnSphere(){
-        const float phi   = RNG::randomFloat(0.0f, TWO_PI_FLOAT);
-        const float theta = RNG::randomFloat(0.0f, TWO_PI_FLOAT);
+        RNG rng;
+        //TODO: Factor out the RNG
+        const float phi   = rng.randomFloatOC(0.0f, TWO_PI_FLOAT);
+        const float theta = rng.randomFloatOC(0.0f, TWO_PI_FLOAT);
         return Vector(
             sinf(theta) * cosf(phi),
             sinf(theta) * sinf(phi),

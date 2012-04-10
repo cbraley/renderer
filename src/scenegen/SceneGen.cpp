@@ -1,7 +1,7 @@
 #include "SceneGen.h"
 //--
 #include "Spectrum.h"
-#include "RNGs.h"
+#include "RNG.h"
 #include "Sphere.h"
 #include "MathUtils.h"
 #include "Quad.h"
@@ -273,11 +273,12 @@ std::vector<PhongMaterial> genRandomMaterials(int N){
     const Spectrum specularChoices[10] = {s1,s2,s3,s4, e,e,e,e,e,e};
 
     std::vector<PhongMaterial> materials;
+    RNG rng;
     for(int i = 0; i < N; i++){
-        Spectrum randDiff = diffuseChoices [RNG::randomInt(0, 5) ];
-        Spectrum randSpec = specularChoices[RNG::randomInt(0, 10)];
-        float randMult = RNG::randomFloat(MUL_MIN, MUL_MAX);
-        int randExp  = RNG::randomInt(RAND_EXP_MIN, RAND_EXP_MAX);
+        Spectrum randDiff = diffuseChoices [rng.randomIntOC(0, 5) ];
+        Spectrum randSpec = specularChoices[rng.randomIntOC(0, 10)];
+        float randMult = rng.randomFloatOC(MUL_MIN, MUL_MAX);
+        int randExp  = rng.randomIntOC(RAND_EXP_MIN, RAND_EXP_MAX);
         materials.push_back( PhongMaterial(randDiff * randMult, e, randExp, AMBIENT) );
     }
 
@@ -304,11 +305,14 @@ std::vector<Shape*> genSphereFlake(int N, const std::vector<Shape*>& initScene, 
         return s;
     }
 
+    RNG rng;
+
     //Recursive case
+
 
     //Make new sphere with random material
     Shape* c = new Sphere(Transform::translate(Vector(center.x, center.y, center.z)), rad);
-    const int randIdx = RNG::randomInt(0, (int) mats.size());
+    const int randIdx = rng.randomIntOC(0, (int) mats.size());
     //c->setMaterial( new PhongMaterial(mats[randIdx]) );
     s.push_back(c);
 

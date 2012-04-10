@@ -1,12 +1,11 @@
 #include "JitteredSampler.h"
 //--
 #include "Assert.h"
-#include "RNGs.h"
 
 JitteredSampler::JitteredSampler(int imageWidth, int imageHeight,
     int sampsPerPixel, float jitterX, float jitterY) :
     ImageSampler(imageWidth, imageHeight, sampsPerPixel),
-    jitX(jitterX), jitY(jitterY)
+    jitX(jitterX), jitY(jitterY), rng()
 {
     //If either jitter amount was -1, compute a good jitter s.t
     //the samples stay within a particular pixel.
@@ -44,8 +43,8 @@ void JitteredSampler::getSamplesForSubwindow(int winLeft, int winRight,
                 Sample currSamp(centeredSamp);
 
                 //Jitter the sample by a random amount
-                const float randX = RNG::randomFloat(-jitX, jitX);
-                const float randY = RNG::randomFloat(-jitY, jitY);
+                const float randX = rng.randomFloatOC(-jitX, jitX);
+                const float randY = rng.randomFloatOC(-jitY, jitY);
                 currSamp.x += randX;
                 currSamp.y += randY;
 
