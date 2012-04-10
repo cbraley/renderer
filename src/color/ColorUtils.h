@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include <string>
 //--
 #include "Assert.h"
 #include "ColorConvMat.h"
@@ -29,25 +30,28 @@
 
 namespace ColorUtils{
 
+    //Common color conversion matrices
+    static const ColorConvMat XYZ_TO_SRGB = ColorConvMat(ColorConvMat::XYZ_TO_sRGB);
+    static const ColorConvMat SRGB_TO_XYZ = ColorConvMat(ColorConvMat::sRGB_TO_XYZ);
 
+    /// \brief Convert XYZ to sRGB
+    void XYZToRGB_sRGB(float X, float Y, float Z,
+        float& R, float& G, float& B);
 
-//Common color conversion matrices
-static const ColorConvMat XYZ_TO_SRGB = ColorConvMat(ColorConvMat::XYZ_TO_sRGB);
-static const ColorConvMat SRGB_TO_XYZ = ColorConvMat(ColorConvMat::sRGB_TO_XYZ);
+    /// \brief Convert sRGB to XYZ
+    void RGBToXYZ_sRGB(float R, float G, float B,
+        float& X, float& Y, float& Z);
 
-static void XYZToRGB_sRGB(float X, float Y, float Z,
-    float& R, float& G, float& B);
-
-static void RGBToXYZ_sRGB(float R, float G, float B,
-    float& X, float& Y, float& Z);
-
+    /// \brief Get a hex-string for a color
+    /// Optionally you can prefix the string(maybe with "0x")
+    std::string getHexStr(unsigned char R, unsigned char G, unsigned char B,
+        const std::string prefix = "");
 }
 
 //Inline function defs --------------------------------------------------------
-inline static void ColorUtils::XYZToRGB_sRGB(float X, float Y, float Z,
+inline void ColorUtils::XYZToRGB_sRGB(float X, float Y, float Z,
     float& R, float& G, float& B)
 {
-
     const float a[3] = {X,Y,Z};
     float b[3] = {R,G,B};
     XYZ_TO_SRGB.apply(a,b);
@@ -56,7 +60,7 @@ inline static void ColorUtils::XYZToRGB_sRGB(float X, float Y, float Z,
     B = b[2];
 }
 
-inline static void ColorUtils::RGBToXYZ_sRGB(float R, float G, float B,
+inline void ColorUtils::RGBToXYZ_sRGB(float R, float G, float B,
     float& X, float& Y, float& Z)
 {
     const float a[3] = {R,G,B};

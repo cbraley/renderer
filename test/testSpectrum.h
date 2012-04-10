@@ -4,14 +4,52 @@
 #include <UnitTest++.h>
 //--
 #include "Spectrum.h"
+#include "SpectrumPlotter.h"
 #include "Point.h"
 //--
 #include <vector>
 #include <iostream>
 
+using namespace SpectrumPlotter;
+
 SUITE(SpectrumTests){
 
     static const float EPS = 1e-6;
+
+    TEST(MakeSpecrumPlots){
+
+        PlotStyle ps("CIE Color Matching Functions");
+        ps.nmMin = 380;
+        ps.nmMax = 780;
+
+        std::vector<SpectrumPlotData> pd;
+        pd.push_back(SpectrumPlotData(
+            Spectrum(Spectrum::CIE_X_2_DEG),
+            "X CMF - 2 Degree"));
+        pd.push_back(SpectrumPlotData(
+            Spectrum(Spectrum::CIE_Y_2_DEG),
+            "Y CMF - 2 Degree"));
+        pd.push_back(SpectrumPlotData(
+            Spectrum(Spectrum::CIE_Z_2_DEG),
+            "Z CMF - 2 Degree"));
+
+        pd.push_back(SpectrumPlotData(
+            Spectrum(Spectrum::CIE_X_10_DEG),
+            "X CMF - 10 Degree"));
+        pd.push_back(SpectrumPlotData(
+            Spectrum(Spectrum::CIE_Y_10_DEG),
+            "Y CMF - 10 Degree"));
+        pd.push_back(SpectrumPlotData(
+            Spectrum(Spectrum::CIE_Z_10_DEG),
+            "Z CMF - 10 Degree"));
+        
+
+
+        bool ok = writeGNUPlotCommandsToFile(pd,ps,
+            "test/tmp/CMFs.gnuplot");
+        CHECK(ok);
+    }
+
 
     TEST(SpectrumCopy){
         std::vector<float> vals;

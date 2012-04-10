@@ -4,6 +4,7 @@
 //--
 #include "Constants.h"
 #include "Renderer.h"
+#include "SpectrumPlotter.h"
 #include "Sphere.h"
 
 #include "IntersectionCheckIntegrator.h"

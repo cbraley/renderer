@@ -3,13 +3,30 @@
 
 #include <UnitTest++.h>
 #include <cstdlib>
+#include <iostream>
 //--
-//#include "../src/ColorUtils.h"
 #include "ColorUtils.h"
 
 using namespace ColorUtils;
 
 SUITE(ColorUtilsTests){
+   
+    //Tested and it works
+    /*
+    TEST(HexStrGen){
+        while(true){
+            unsigned int r,g,b;
+            r = g = b = 0;
+            std::cin >> r;
+            std::cin >> g;
+            std::cin >> b;
+            std::cout << std::endl;
+            std::cout <<
+                "RGB tuple (" << r << ", " << g << ", " << b << ") = " << 
+                ColorUtils::getHexStr((unsigned char)r,(unsigned char)g,(unsigned char)b,"0x") << std::endl;
+        }
+    }
+    */
 
     TEST(ConvMatIdentity){
         ColorConvMat I; //Identity transform, should do nothing!
