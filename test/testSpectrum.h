@@ -52,11 +52,11 @@ SUITE(SpectrumTests){
         //Lum eff functions
         std::vector<SpectrumPlotData> pd2;
         pd2.push_back(SpectrumPlotData(
-            Spectrum(Spectrum::CIE_LUMINOUS_EFFICIENCY_PHOTOPIC_1951),
-            "Photopic Luminous Efficacy "));
-        pd2.push_back(SpectrumPlotData(
             Spectrum(Spectrum::CIE_LUMINOUS_EFFICIENCY_SCOPTIC_1951),
             "Scotopic Luminous Efficacy "));
+        pd2.push_back(SpectrumPlotData(
+            Spectrum(Spectrum::CIE_LUMINOUS_EFFICIENCY_PHOTOPIC_1951),
+            "Photopic Luminous Efficacy "));
         ps.title = ("CIE Luminous Efficacy Functions(Judd 1951 Data)");
         ps.nmMin = 360;
         ps.nmMax = 830;
@@ -78,7 +78,7 @@ SUITE(SpectrumTests){
             std::stringstream s;
             s << K << " Kelvin Blackbody";
             blackbodies.push_back(SpectrumPlotData(
-                Spectrum((float)K, NM_S, NM_E, 1000),
+                Spectrum((float)K, NM_S, NM_E, 3000),
                 s.str()));
 
             //Set it to a color

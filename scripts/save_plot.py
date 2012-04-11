@@ -32,7 +32,9 @@ cmds    = fhandle.read()
 if DISPLAY_X11:
     setupLine  = "set terminal X11 persist"
 else:
-    setupLine  = "set terminal svg size 1000,1000 dynamic enhanced fname 'arial' fsize 12 butt solid"
+    #setupLine  = "set terminal svg size 1000,1000 dynamic enhanced fname 'arial' fsize 12 butt solid"
+    setupLine  = "set terminal postscript enhanced  color"
+    #setupLine  = "set terminal canvas"
 outputLine = "set output \"" + outputFile + "\""
 
 
@@ -40,10 +42,10 @@ outputLine = "set output \"" + outputFile + "\""
 #temp = tempfile.NamedTemporaryFile(prefix='gnuplot_temp_', suffix='.gnuplot', dir='/tmp', delete=True)
 tempFile = open(TEMP_FILE_NAME, "w")
 tempFile.write(setupLine + "\n")
+tempFile.write(outputLine + "\n")
 if USE_WHITE_BG:
     tempFile.write("set object 1 rect from screen 0, 0, 0 to screen 1, 1, 0 behind\n")
     tempFile.write("set object 1 rect fc  rgb \"white\"  fillstyle solid 1.0\n")
-tempFile.write(outputLine + "\n")
 tempFile.write(cmds + "\n")
 
 #Execute the GNUPlot command
