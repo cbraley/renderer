@@ -8,7 +8,9 @@
 #include "Point.h"
 //--
 #include <vector>
+#include <algorithm>
 #include <iostream>
+#include <sstream>
 
 using namespace SpectrumPlotter;
 
@@ -46,6 +48,68 @@ SUITE(SpectrumTests){
         bool ok = writeGNUPlotCommandsToFile(pd,ps,
             "test/tmp/CMFs.gnuplot");
         CHECK(ok);
+
+        //Lum eff functions
+        std::vector<SpectrumPlotData> pd2;
+        pd2.push_back(SpectrumPlotData(
+            Spectrum(Spectrum::CIE_LUMINOUS_EFFICIENCY_PHOTOPIC_1951),
+            "Photopic Luminous Efficacy "));
+        pd2.push_back(SpectrumPlotData(
+            Spectrum(Spectrum::CIE_LUMINOUS_EFFICIENCY_SCOPTIC_1951),
+            "Scotopic Luminous Efficacy "));
+        ps.title = ("CIE Luminous Efficacy Functions(Judd 1951 Data)");
+        ps.nmMin = 360;
+        ps.nmMax = 830;
+        ok = writeGNUPlotCommandsToFile(pd2,ps,
+            "test/tmp/Lum_Eff.gnuplot");
+        CHECK(ok);
+
+        //Blackbodies
+        const float NM_S = 360.0f;
+        const float NM_E = 830.0f;
+        std::vector<SpectrumPlotData> blackbodies;
+        const int KELVIN_STEP  = 500;
+        const int KELVIN_START = 2500;
+        const int KELVIN_END   = 5500;
+        int cnt = 0;
+        for(int K = KELVIN_START; K <= KELVIN_END; K += KELVIN_STEP){
+
+            //Add spectrum
+            std::stringstream s;
+            s << K << " Kelvin Blackbody";
+            blackbodies.push_back(SpectrumPlotData(
+                Spectrum((float)K, NM_S, NM_E, 1000),
+                s.str()));
+
+            //Set it to a color
+            unsigned char R,G,B;
+            float r,g,b; r = g = b = 0.0f;
+            blackbodies[cnt].data.toRGB(r,g,b,1.0f);
+            float maxVal = std::max<float>(std::max<float>(r,g),b);
+            R = (unsigned char) std::max<float>((r/maxVal)*255.0f,0.0f);
+            G = (unsigned char) std::max<float>((g/maxVal)*255.0f,0.0f);
+            B = (unsigned char) std::max<float>((b/maxVal)*255.0f,0.0f);
+            blackbodies[cnt].lineColor.R = R;
+            blackbodies[cnt].lineColor.G = G;
+            blackbodies[cnt].lineColor.B = B;
+            blackbodies[cnt].useDfltColor = false;
+
+            ++cnt;
+
+        }
+        //ps.nmMin = 1.0f;
+        //ps.nmMax = 1300.0f;
+        ps.nmMin = NM_S;
+        ps.nmMax = NM_E;
+        ps.title = ("Blackbody radiation spectra calculated with Planck's Law");
+        ok = writeGNUPlotCommandsToFile(blackbodies,ps,
+            "test/tmp/blackbodies.gnuplot");
+        CHECK(ok);
+
+        
+
+
+
     }
 
 

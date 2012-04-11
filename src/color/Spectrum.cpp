@@ -9,11 +9,10 @@
 #include <utility>
 #include <ctime>
 //--
-#include "Assert.h"  //Assertion macros
-//#include "CIEData.h" //Spectral reference data
+#include "Assert.h"
 #include "LightData.h"
 #include "ColorData.h" //Spectral reference data
-#include "ColorUtils.h" //Spectral reference data
+#include "ColorUtils.h"
 #include "StringUtils.h"
 
 void Spectrum::assertInvariant()const{
@@ -125,7 +124,6 @@ Spectrum::Spectrum(SpectralMatchingCurve sCurve) :
 
     //We declare an associative array of enums to enums to avoid a giant
     //case statement
-    //TODO: Add luminous eff. functions here!!!!!
     typedef std::pair<SpectralMatchingCurve, CMF_ID> EnumMapHelper;
     const int NUM_DATA = 8;
     EnumMapHelper dict[NUM_DATA] = {
@@ -535,7 +533,7 @@ bool Spectrum::operator==(const Spectrum& other)const{
     //to compare samples
     if(N != other.N || minNm != other.minNm || maxNm != other.maxNm ||
         stepNm != other.stepNm){
-       
+
 
         std::cout << "Step A = " << stepNm       << std::endl;
         std::cout << "Step B = " << other.stepNm << std::endl;
@@ -806,7 +804,7 @@ std::ostream& operator<<(std::ostream& os, const Spectrum& s){
     os << "\tstepNm = " << s.stepNm << std::endl;
     std::vector<float> nms = s.getSampleNms();
     for(int i = 0; i < s.N; i++){
-        os << "\t\ts[" << nms[i] << "] = " << 
+        os << "\t\ts[" << nms[i] << "] = " <<
             //s(nms[i]) << std::endl;
             s[i] << std::endl;
     }
