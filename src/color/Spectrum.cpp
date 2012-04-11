@@ -191,12 +191,14 @@ Spectrum::Spectrum(float* vals, float minNmVal, float maxNmVal,
 
 //Helper function for Planck's law of blackbody radiation
 inline static float planck(const float lambda, const float T){
-    const float hc = 1.986446e-16; //Planck's constant times the speed of light
+    const float hc  = 1.986446e-16; //Planck's constant times the speed of light
     const float hcc = hc * 2.998e17;
-    const float k = 1.38065e-23; //Boltzman constant
-    const float exponent = (hc) / (lambda * k * T);
-    return ((2.0f * hcc)/(pow(lambda,5))) *
-        (1.0f / (exp(exponent) - 1.0f));
+    const float kB  = 1.38065e-23; //Boltzman constant
+    const float exponent = (hc) / (lambda * kB * T);
+
+    const float term1 = ((2.0f * hcc)/(pow(lambda,5)));
+    const float term2 = 1.0f / (exp(exponent) -1.0f);
+    return term1 * term2 * 1e13; //TODO: The 1e13 is a hack to put these spectra into a decent numeric range
 }
 
 

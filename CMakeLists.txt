@@ -147,6 +147,8 @@ list(REMOVE_ITEM GUI_CORE_SOURCES /home/cab6fh/Documents/Projects/Render_new/src
 list(REMOVE_ITEM GUI_CORE_SOURCES ~/Documents/Projects/Render_new/src/main.cpp) #TODO: Unhardcode!
 list(REMOVE_ITEM GUI_CORE_SOURCES /home/cbraley/Documents/Projects/Render_1/src/main.cpp) #TODO: Unhardcode!
 list(REMOVE_ITEM GUI_CORE_SOURCES /home/cbraley/Documents/Projects/git_ren/src/main.cpp) #TODO: Unhardcode!
+list(REMOVE_ITEM GUI_CORE_SOURCES /home/cbraley/Documents/Projects/git_ren/renderer/src/main.cpp) #TODO: Unhardcode!
+list(REMOVE_ITEM GUI_CORE_SOURCES /home/cbraley/Documents/Projects/git_ren/renderer/src/main_gui.cpp) #TODO: Unhardcode!
 
 add_subdirectory(gui)
 
@@ -160,7 +162,7 @@ set(CMAKE_BUILD_TYPE Debug)
 #add_executable(${CREN_APP_RELEASE_WITH_DSYMBOLS} ${CBRender_SRCS})
 add_executable(${CREN_APP_DEBUG}                 ${CBRender_SRCS}      )
 add_executable(${CREN_APP_TEST}                  ${CBRender_TEST_SRCS} )
-add_executable(${CREN_APP_SPEC2RGB}              ${SPEC2RGB_SRCS}      )
+#add_executable(${CREN_APP_SPEC2RGB}              ${SPEC2RGB_SRCS}      )
 #set(CMAKE_CXX_COMPILER clang)
 
 

@@ -44,7 +44,7 @@ SUITE(SpectrumTests){
         pd.push_back(SpectrumPlotData(
             Spectrum(Spectrum::CIE_Z_10_DEG),
             "Z CMF - 10 Degree"));
-
+    
         bool ok = writeGNUPlotCommandsToFile(pd,ps,
             "test/tmp/CMFs.gnuplot");
         CHECK(ok);
@@ -61,7 +61,7 @@ SUITE(SpectrumTests){
         ps.nmMin = 360;
         ps.nmMax = 830;
         ok = writeGNUPlotCommandsToFile(pd2,ps,
-            "test/tmp/Lum_Eff.gnuplot");
+            "test/tmp/LumEff.gnuplot");
         CHECK(ok);
 
         //Blackbodies
@@ -78,7 +78,7 @@ SUITE(SpectrumTests){
             std::stringstream s;
             s << K << " Kelvin Blackbody";
             blackbodies.push_back(SpectrumPlotData(
-                Spectrum((float)K, NM_S, NM_E, 3000),
+                Spectrum((float)K, 1.0f, 1300.0f, 2000),
                 s.str()));
 
             //Set it to a color
@@ -92,24 +92,24 @@ SUITE(SpectrumTests){
             blackbodies[cnt].lineColor.R = R;
             blackbodies[cnt].lineColor.G = G;
             blackbodies[cnt].lineColor.B = B;
-            blackbodies[cnt].useDfltColor = false;
+            //blackbodies[cnt].useDfltColor = false;
 
             ++cnt;
 
         }
-        //ps.nmMin = 1.0f;
-        //ps.nmMax = 1300.0f;
         ps.nmMin = NM_S;
         ps.nmMax = NM_E;
         ps.title = ("Blackbody radiation spectra calculated with Planck's Law");
         ok = writeGNUPlotCommandsToFile(blackbodies,ps,
-            "test/tmp/blackbodies.gnuplot");
+            "test/tmp/blackbodies_1.gnuplot");
         CHECK(ok);
 
-        
-
-
-
+        ps.nmMin = 1.0f;
+        ps.nmMax = 1300.0f;
+        ps.title = ("Blackbody radiation spectra calculated with Planck's Law");
+        ok = writeGNUPlotCommandsToFile(blackbodies,ps,
+            "test/tmp/blackbodies_2.gnuplot");
+        CHECK(ok);
     }
 
 
