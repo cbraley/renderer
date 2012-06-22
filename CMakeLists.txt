@@ -73,7 +73,7 @@ include_directories(${BASE_SOURCE_DIR})
 message(STATUS "Path to root source directory: ${BASE_SOURCE_DIR}")
 
 #Each .cpp file that contains an int main(int, char**) function is listed below
-set(MAIN_CPP_CMD_LINE "${BASE_SOURCE_DIR}/main.cpp") 
+set(MAIN_CPP_CMD_LINE "${BASE_SOURCE_DIR}/main_cmd_line.cpp") 
 set(MAIN_CPP_GUI "${BASE_SOURCE_DIR}/main_gui.cpp")
 set(MAIN_CPP_UNIT_TESTS "${BASE_SOURCE_DIR}/main_test.cpp")
 #List of all files containing main(int, char**) functions
