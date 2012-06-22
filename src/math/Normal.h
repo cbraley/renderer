@@ -7,8 +7,8 @@
 #include <cassert>
 //--
 #include "Config.h"
-#include "Vector.h"
-#include "Assert.h"
+#include "math/Vector.h"
+#include "utils/Assert.h"
 
 
 //TODO: Make == and != and = for all these basic classes

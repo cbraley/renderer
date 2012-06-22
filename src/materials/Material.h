@@ -1,8 +1,8 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "Spectrum.h"
-#include "Vector.h"
+#include "color/Spectrum.h"
+#include "math/Vector.h"
 
 class Material{
 public:

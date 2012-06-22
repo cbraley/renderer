@@ -1,10 +1,10 @@
-#include "RNGs.h"
+#include "utils/RNGs.h"
 //--
 /*
 #include <ctime>
 //--
-#include "mtrand.h"
-#include "Assert.h"
+#include "utils/mtrand.h"
+#include "utils/Assert.h"
 
 static bool rngInitialized = false;
 static MTRand mt; //Mersenne twisiter RNG

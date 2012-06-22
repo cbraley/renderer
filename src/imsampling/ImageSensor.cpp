@@ -1,9 +1,9 @@
-#include "ImageSensor.h"
+#include "imsampling/ImageSensor.h"
 //--
 #include <iomanip>
 //--
-#include "ColorUtils.h"
-#include "AtomicOps.h"
+#include "color/ColorUtils.h"
+#include "parallel/AtomicOps.h"
 
 //TODO: Remove this before public release, for debugging only
 //...trying to track down bizarre pixels...

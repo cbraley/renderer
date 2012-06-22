@@ -3,11 +3,11 @@
 
 #include <vector>
 //--
-#include "Assert.h"
-#include "ReconstructionFilter.h"
-#include "Spectrum.h"
-#include "ImageSampler.h"
-#include "ImageTypes.h"
+#include "utils/Assert.h"
+#include "imsampling/ReconstructionFilter.h"
+#include "color/Spectrum.h"
+#include "imsampling/ImageSampler.h"
+#include "imageio/ImageTypes.h"
 
 /**
 *  The image sensor models many kinds of radiance detector(CCD, CMOS, Film, etc).

@@ -1,10 +1,10 @@
 #ifndef PATH_TRACING_INTEGRATOR_H
 #define PATH_TRACING_INTEGRATOR_H
 
-#include "Integrator.h"
-#include "Spectrum.h"
-#include "Vector.h"
-#include "Ray.h"
+#include "integrators/Integrator.h"
+#include "color/Spectrum.h"
+#include "math/Vector.h"
+#include "geom/Ray.h"
 
 class PathTracingIntegrator : public Integrator{
 public:

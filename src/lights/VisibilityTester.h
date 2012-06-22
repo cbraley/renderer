@@ -1,9 +1,9 @@
 #ifndef VISIBILITY_TESTER_H
 #define VISIBILITY_TESTER_H
 
-#include "Scene.h"
-#include "AccelStructure.h"
-#include "Shape.h"
+#include "scene/Scene.h"
+#include "accel/AccelStructure.h"
+#include "primitives/Shape.h"
 
 /**
  *  The VisibilityTester class takes on the role of "shadow rays" in a RayTracer.

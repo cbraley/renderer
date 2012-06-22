@@ -4,7 +4,7 @@
 #include <iostream>
 #include <limits.h>
 //--
-#include "Assert.h"
+#include "utils/Assert.h"
 
 /**
  *  Utility code for various bit-maniuplation tricks.

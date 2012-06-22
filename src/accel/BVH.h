@@ -5,7 +5,7 @@
 #include <stack>
 #include <vector>
 //--
-#include "BoundingBox.h"
+#include "geom/BoundingBox.h"
 
 /**
  *  Templated BVH class.

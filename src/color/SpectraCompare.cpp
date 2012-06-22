@@ -1,9 +1,9 @@
-#include "SpectraCompare.h"
+#include "color/SpectraCompare.h"
 
 #include <algorithm>
 #include <cmath>
 //--
-#include "Assert.h"
+#include "utils/Assert.h"
 
 //All comparision metrics that require discrete sampling must have some
 //sampling interval.  It is SAMPLE_STEP.

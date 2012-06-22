@@ -1,7 +1,7 @@
 #ifndef INTERPOLATE_H
 #define INTERPOLATE_H
 
-#include "Assert.h"
+#include "utils/Assert.h"
 
 namespace Interpolate{
 

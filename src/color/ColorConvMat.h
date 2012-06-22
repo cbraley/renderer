@@ -3,8 +3,8 @@
 
 #include <iostream>
 //--
-#include "Spectrum.h"
-#include "Assert.h"
+#include "color/Spectrum.h"
+#include "utils/Assert.h"
 
 /**
  *  Simple class that represents a 3x3 matrix that converts

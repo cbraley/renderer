@@ -1,7 +1,7 @@
 #ifndef SPECTRA_COMPARE_H
 #define SPECTRA_COMPARE_H
 
-#include "Spectrum.h"
+#include "color/Spectrum.h"
 
 /**
  *  This namespace contains functions for comparing spectra.

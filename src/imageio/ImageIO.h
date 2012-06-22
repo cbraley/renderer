@@ -3,7 +3,7 @@
 
 #include <string>
 //--
-#include "ImageTypes.h"
+#include "imageio/ImageTypes.h"
 
 namespace ImageIO{
 

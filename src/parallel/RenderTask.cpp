@@ -1,7 +1,7 @@
-#include "RenderTask.h"
+#include "parallel/RenderTask.h"
 //--
-#include "Assert.h"
-#include "ColorConstants.h"
+#include "utils/Assert.h"
+#include "color/ColorConstants.h"
 
 RenderTask::RenderTask(ImageSampler::Sample* samples,
     const ImageSampler* imSampler, int Nsamps,

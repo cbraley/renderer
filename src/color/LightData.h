@@ -1,7 +1,7 @@
 #ifndef LIGHT_DATA_H
 #define LIGHT_DATA_H
 
-#include "Assert.h"
+#include "utils/Assert.h"
 
 /**
  * Tabulated data for various reference light sources.

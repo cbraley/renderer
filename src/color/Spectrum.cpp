@@ -1,4 +1,4 @@
-#include "Spectrum.h"
+#include "color/Spectrum.h"
 
 #include <cstring>
 #include <cmath>
@@ -9,11 +9,11 @@
 #include <utility>
 #include <ctime>
 //--
-#include "Assert.h"
-#include "LightData.h"
-#include "ColorData.h" //Spectral reference data
-#include "ColorUtils.h"
-#include "StringUtils.h"
+#include "utils/Assert.h"
+#include "color/LightData.h"
+#include "color/ColorData.h" //Spectral reference data
+#include "color/ColorUtils.h"
+#include "utils/StringUtils.h"
 
 void Spectrum::assertInvariant()const{
     Assert(N > 0);

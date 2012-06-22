@@ -1,10 +1,10 @@
 #ifndef INTEGRATOR_H
 #define INTEGRATOR_H
 
-#include "Scene.h"
-#include "Ray.h"
-#include "RaySurfIntersection.h"
-#include "Spectrum.h"
+#include "scene/Scene.h"
+#include "geom/Ray.h"
+#include "geom/RaySurfIntersection.h"
+#include "color/Spectrum.h"
 
 class Integrator{
 public:

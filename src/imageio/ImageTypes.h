@@ -1,7 +1,7 @@
 #ifndef IMAGE_TYPES_H
 #define IMAGE_TYPES_H
 
-#include "Image.h"
+#include "imageio/Image.h"
 
 /**
  *  An HDR image is just a tristimulus buffer of type float.

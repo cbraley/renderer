@@ -1,12 +1,12 @@
-#include "ToneMap.h"
+#include "imageio/ToneMap.h"
 //--
 #include <iostream>
 #include <algorithm>
 #include <iomanip>
 //--
-#include "Assert.h"
-#include "Constants.h"
-#include "RNG.h"
+#include "utils/Assert.h"
+#include "utils/Constants.h"
+#include "utils/RNG.h"
 
 //#define TONEMAP_USING_BRIGHTNESS
 

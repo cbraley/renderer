@@ -1,8 +1,8 @@
 #ifndef JITTERED_SAMPLER_H
 #define JITTERED_SAMPLER_H
 
-#include "ImageSampler.h"
-#include "RNG.h"
+#include "imsampling/ImageSampler.h"
+#include "utils/RNG.h"
 
 class JitteredSampler : public ImageSampler{
 protected:

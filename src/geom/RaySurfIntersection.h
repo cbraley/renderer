@@ -1,11 +1,11 @@
 #ifndef RAY_SURF_INTERSECTION_H
 #define RAY_SURF_INTERSECTION_H
 
-#include "Ray.h"
-#include "Vector.h"
-#include "Normal.h"
-#include "Point.h"
-#include "Assert.h"
+#include "geom/Ray.h"
+#include "math/Vector.h"
+#include "math/Normal.h"
+#include "math/Point.h"
+#include "utils/Assert.h"
 class Shape;
 
 

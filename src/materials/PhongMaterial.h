@@ -1,8 +1,8 @@
 #ifndef PHONG_MATERIAL_H
 #define PHONG_MATERIAL_H
 
-#include "Material.h"
-#include "Spectrum.h"
+#include "materials/Material.h"
+#include "color/Spectrum.h"
 
 class PhongMaterial : public Material{
 private:

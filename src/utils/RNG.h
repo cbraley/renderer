@@ -2,7 +2,7 @@
 #define RNG_H
 
 #include <ctime>
-#include "tinymt32.h"
+#include "third_party/tinymt32.h"
 
 
 /**

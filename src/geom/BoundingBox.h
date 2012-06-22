@@ -5,9 +5,9 @@
 #include <iostream>
 #include <cmath>
 //--
-#include "Vector.h"
-#include "Constants.h"
-#include "Point.h"
+#include "math/Vector.h"
+#include "utils/Constants.h"
+#include "math/Point.h"
 
 
 /**

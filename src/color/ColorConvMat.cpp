@@ -1,4 +1,4 @@
-#include "ColorConvMat.h"
+#include "color/ColorConvMat.h"
 
 ColorConvMat::ColorConvMat(){
     //Set main diag to 1's...and the rest to 0's

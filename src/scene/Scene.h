@@ -3,11 +3,11 @@
 
 #include <vector>
 //--
-#include "BoundingBox.h"
-#include "Light.h"
-#include "Ray.h"
-#include "AccelStructure.h"
-#include "RaySurfIntersection.h"
+#include "geom/BoundingBox.h"
+#include "lights/Light.h"
+#include "geom/Ray.h"
+#include "accel/AccelStructure.h"
+#include "geom/RaySurfIntersection.h"
 
 class Scene{
 public:

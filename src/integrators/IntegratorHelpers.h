@@ -1,10 +1,10 @@
 #ifndef INTEGRATOR_HELPERS_H
 #define INTEGRATOR_HELPERS_H
 
-#include "Scene.h"
-#include "Ray.h"
-#include "RaySurfIntersection.h"
-#include "Spectrum.h"
+#include "scene/Scene.h"
+#include "geom/Ray.h"
+#include "geom/RaySurfIntersection.h"
+#include "color/Spectrum.h"
 
 /**
  *  Many different integrators need to call

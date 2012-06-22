@@ -1,9 +1,9 @@
 #ifndef GEOM_UTILS_H
 #define GEOM_UTILS_H
 
-#include "Point.h"
-#include "Vector.h"
-#include "RNG.h"
+#include "math/Point.h"
+#include "math/Vector.h"
+#include "utils/RNG.h"
 //--
 #include <cmath>
 

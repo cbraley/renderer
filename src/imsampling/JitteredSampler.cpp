@@ -1,6 +1,6 @@
-#include "JitteredSampler.h"
+#include "imsampling/JitteredSampler.h"
 //--
-#include "Assert.h"
+#include "utils/Assert.h"
 
 JitteredSampler::JitteredSampler(int imageWidth, int imageHeight,
     int sampsPerPixel, float jitterX, float jitterY) :

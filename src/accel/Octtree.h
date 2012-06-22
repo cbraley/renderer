@@ -5,7 +5,7 @@
 #include <cassert>
 #include <stack>
 //--
-#include "Assert.h"
+#include "utils/Assert.h"
 
 template<typename T>
 class Octtree{

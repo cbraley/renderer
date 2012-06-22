@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <cmath>
 //--
-#include "Assert.h"
+#include "utils/Assert.h"
 
 //TODO: This is a hack!  Make this work for other types!
 #define DFLT_EPSILON_VAL (T(0.00001))

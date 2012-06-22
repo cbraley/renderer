@@ -1,9 +1,9 @@
 #ifndef OREN_NAYAR_BRDF_H
 #define OREN_NAYAR_BRDF_H
 
-#include "BRDF.h"
-#include "Spectrum.h"
-#include "Vector.h"
+#include "materials/BRDF.h"
+#include "color/Spectrum.h"
+#include "math/Vector.h"
 
 class OrenNayarBRDF : public BRDF{
     OrenNayarBRDF();

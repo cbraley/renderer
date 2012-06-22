@@ -1,12 +1,12 @@
-#include "Quad.h"
+#include "primitives/Quad.h"
 //--
 #include <cmath>
 #include <iostream>
 //--
-#include "Assert.h"
-#include "GeomUtils.h"
-#include "Triangle.h"
-#include "RNG.h"
+#include "utils/Assert.h"
+#include "utils/GeomUtils.h"
+#include "primitives/Triangle.h"
+#include "utils/RNG.h"
 
 //Intersection epsilon
 static const float QUAD_EPSILON = 10e-6;

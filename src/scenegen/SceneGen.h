@@ -3,12 +3,12 @@
 
 #include <vector>
 //--
-#include "Point.h"
-#include "Material.h"
-#include "PhongMaterial.h"
-#include "Shape.h"
-#include "Camera.h"
-#include "Light.h"
+#include "math/Point.h"
+#include "materials/Material.h"
+#include "materials/PhongMaterial.h"
+#include "primitives/Shape.h"
+#include "cameras/Camera.h"
+#include "lights/Light.h"
 
 
 /**

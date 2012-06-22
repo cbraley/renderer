@@ -1,0 +1,27 @@
+#Spectrum file from Colin Braley's Renderer
+#Stores spectra with regularly spaced samples
+#Written on: Wed Apr 11 06:31:17 2012
+
+
+# Lines with the pound sign are comments, blank lines are OK.
+#File format is: 
+#N samples
+#first wavelength
+#last wavelength
+#wavelength step
+
+10
+300
+1000
+77.7777786254883
+
+0
+0
+0
+0
+0
+4.47014210119617e-43
+3.05777337900318e-40
+5.99587138499794e-38
+4.64226101318001e-36
+1.76816115376261e-34

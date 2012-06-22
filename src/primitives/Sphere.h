@@ -1,8 +1,8 @@
 #ifndef PRIMITIVE_SPHERE_H
 #define PRIMITIVE_SPHERE_H
 
-#include "RaySurfIntersection.h"
-#include "Shape.h"
+#include "geom/RaySurfIntersection.h"
+#include "primitives/Shape.h"
 
 class Sphere : public Shape{
 private:

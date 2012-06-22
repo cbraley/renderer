@@ -1,7 +1,7 @@
-#include "OrenNayarBRDF.h"
+#include "materials/OrenNayarBRDF.h"
 //--
-#include "Assert.h"
-#include "Constants.h"
+#include "utils/Assert.h"
+#include "utils/Constants.h"
 
 void OrenNayarBRDF::precomputeAB(){
     const float sigmaSquared = sigma * sigma;

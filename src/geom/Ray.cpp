@@ -1,4 +1,4 @@
-#include "Ray.h"
+#include "geom/Ray.h"
 
 //Note that the below definitions of the == and != operators depend
 //on how == and != are implemented for Vector and Point

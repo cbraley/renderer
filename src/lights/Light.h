@@ -1,10 +1,10 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
-#include "Spectrum.h"
-#include "VisibilityTester.h"
+#include "color/Spectrum.h"
+#include "lights/VisibilityTester.h"
 //class Shape; //Forward declaration to avoid circular include
-#include "Shape.h"
+#include "primitives/Shape.h"
 
 //TODO: Make the base Light class store the Transform
 //that places the light into the world.

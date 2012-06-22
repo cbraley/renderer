@@ -1,10 +1,10 @@
-#include "ParallelRenderer.h"
+#include "renderers/ParallelRenderer.h"
 //--
 #include <iostream>
 //--
-#include "Assert.h"
-#include "Timer.h"
-#include "ColorConstants.h"
+#include "utils/Assert.h"
+#include "utils/Timer.h"
+#include "color/ColorConstants.h"
 //--
 #include <pthread.h>
 

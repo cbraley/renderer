@@ -1,6 +1,6 @@
-#include "BoundingBox.h"
+#include "geom/BoundingBox.h"
 //--
-#include "Assert.h"
+#include "utils/Assert.h"
 
 std::ostream& operator<<(std::ostream& os, const BoundingBox& bbox){
     os << "AABB( min = " << bbox.minPoint <<

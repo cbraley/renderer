@@ -1,8 +1,8 @@
 #ifndef NO_ACCEL_STRUCTURE_H
 #define NO_ACCEL_STRUCTURE_H
 
-#include "AccelStructure.h"
-#include "Assert.h"
+#include "accel/AccelStructure.h"
+#include "utils/Assert.h"
 
 /**
  *  Simple "non-accelerating" AccelStructure.  This class simply tests a given ray against

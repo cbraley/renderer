@@ -1,15 +1,15 @@
-#include "SceneGen.h"
+#include "scenegen/SceneGen.h"
 //--
-#include "Spectrum.h"
-#include "RNG.h"
-#include "Sphere.h"
-#include "MathUtils.h"
-#include "Quad.h"
-#include "Spectrum.h"
-#include "PointLight.h"
-#include "AreaLight.h"
-#include "Triangle.h"
-#include "LambertianBRDF.h"
+#include "color/Spectrum.h"
+#include "utils/RNG.h"
+#include "primitives/Sphere.h"
+#include "math/MathUtils.h"
+#include "primitives/Quad.h"
+#include "color/Spectrum.h"
+#include "lights/PointLight.h"
+#include "lights/AreaLight.h"
+#include "primitives/Triangle.h"
+#include "materials/LambertianBRDF.h"
 
 namespace SceneGen{
 

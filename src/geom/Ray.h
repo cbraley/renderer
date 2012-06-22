@@ -4,10 +4,10 @@
 #include <string>
 #include <iostream>
 //--
-#include "Vector.h"
-#include "Point.h"
-#include "Assert.h"
-#include "Constants.h"
+#include "math/Vector.h"
+#include "math/Point.h"
+#include "utils/Assert.h"
+#include "utils/Constants.h"
 
 //static const float DFLT_RAY_MOVE_EPSILON = MIN_POS_FLOAT * 100.0f;
 //static const float DFLT_RAY_MOVE_EPSILON = 0.00022f;

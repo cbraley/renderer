@@ -1,8 +1,8 @@
-#include "PathTracingIntegrator.h"
+#include "integrators/PathTracingIntegrator.h"
 //--
-#include "Assert.h"
-#include "GeomUtils.h"
-#include "IntegratorHelpers.h"
+#include "utils/Assert.h"
+#include "utils/GeomUtils.h"
+#include "integrators/IntegratorHelpers.h"
 
 static const float INDIRECT_MULT = 5.0f;
 

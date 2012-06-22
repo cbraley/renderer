@@ -1,7 +1,7 @@
-#include "Transform.h"
+#include "math/Transform.h"
 
-#include "MathUtils.h"
-#include "Assert.h"
+#include "math/MathUtils.h"
+#include "utils/Assert.h"
 
 //Used for comparison of two transformation matrices
 static const float COMPARE_EPS = 0.00001f;

@@ -1,12 +1,12 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
-#include "Transform.h"
-#include "BRDF.h"
-#include "LambertianBRDF.h"
-#include "RaySurfIntersection.h"
-#include "BoundingBox.h"
-#include "BRDF.h"
+#include "math/Transform.h"
+#include "materials/BRDF.h"
+#include "materials/LambertianBRDF.h"
+#include "geom/RaySurfIntersection.h"
+#include "geom/BoundingBox.h"
+#include "materials/BRDF.h"
 class Light; //Forward declaration to avoid circular include
 
 /**

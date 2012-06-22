@@ -1,9 +1,9 @@
 #ifndef AREA_LIGHT_H
 #define AREA_LIGHT_H
 
-#include "Light.h"
-#include "Quad.h"
-#include "Assert.h"
+#include "lights/Light.h"
+#include "primitives/Quad.h"
+#include "utils/Assert.h"
 
 //TODO: For now area lights are only quads
 //I still need to implement sampling methods for other types

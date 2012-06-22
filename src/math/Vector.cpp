@@ -1,6 +1,4 @@
-#include "Vector.h"
-//--
-#include <cmath>
+#include "math/Vector.h"
 
 static const float VECTOR_COMPARE_EPS = 0.00001f;
 

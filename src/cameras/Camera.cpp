@@ -1,7 +1,7 @@
-#include "Camera.h"
+#include "cameras/Camera.h"
 //--
-#include "Assert.h"
-#include "MathUtils.h"
+#include "utils/Assert.h"
+#include "math/MathUtils.h"
 
 /*
 Camera::Camera(const Transform& camToWorldTransform, float fieldOfViewDeg,

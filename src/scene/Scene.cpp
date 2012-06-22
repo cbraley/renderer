@@ -1,6 +1,6 @@
-#include "Scene.h"
+#include "scene/Scene.h"
 //--
-#include "Assert.h"
+#include "utils/Assert.h"
 
 void Scene::computeBound(){
     size_t M = accel->getNumShapes();

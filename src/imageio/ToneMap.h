@@ -1,7 +1,7 @@
 #ifndef TONE_MAP_H
 #define TONE_MAP_H
 
-#include "ImageTypes.h"
+#include "imageio/ImageTypes.h"
 
 /**
  *  Simple tone mapping algorithms for mapping an HDR image down to a final 8 bit image.

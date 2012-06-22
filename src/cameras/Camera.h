@@ -1,8 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Transform.h"
-#include "Ray.h"
+#include "math/Transform.h"
+#include "geom/Ray.h"
 
 /**
  *  Perspective camera class.

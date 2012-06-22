@@ -1,8 +1,8 @@
-#include "ImageIO.h"
+#include "imageio/ImageIO.h"
 //--
 #include <fstream>
 //--
-#include "Assert.h"
+#include "utils/Assert.h"
 
 
 bool ImageIO::writePPM(const std::string& fileName, const LDRImage* const img,

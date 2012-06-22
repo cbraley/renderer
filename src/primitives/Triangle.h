@@ -1,10 +1,10 @@
 #ifndef PRIMITIVE_TRIANGLE_H
 #define PRIMITIVE_TRIANGLE_H
 
-#include "RaySurfIntersection.h"
-#include "Shape.h"
-#include "Vector.h"
-#include "Point.h"
+#include "geom/RaySurfIntersection.h"
+#include "primitives/Shape.h"
+#include "math/Vector.h"
+#include "math/Point.h"
 
 //TODO: Triangle class eventually needs a large overhaul for 2 reasons
 //    1 - Triangle's are typically in scenes in a mesh.  Each triangle storring

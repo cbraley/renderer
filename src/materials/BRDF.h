@@ -1,8 +1,8 @@
 #ifndef BRDF_H
 #define BRDF_H
 
-#include "Vector.h"
-#include "Assert.h"
+#include "math/Vector.h"
+#include "utils/Assert.h"
 
 /**
  *  Base class that all other BRDF models are derived from.

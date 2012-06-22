@@ -1,9 +1,9 @@
-#include "DirectLightIntegrator.h"
+#include "integrators/DirectLightIntegrator.h"
 //--
-#include "Assert.h"
-#include "GeomUtils.h"
-#include "VisibilityTester.h"
-#include "IntegratorHelpers.h"
+#include "utils/Assert.h"
+#include "utils/GeomUtils.h"
+#include "lights/VisibilityTester.h"
+#include "integrators/IntegratorHelpers.h"
 
 DirectLightIntegrator::DirectLightIntegrator() {}
 

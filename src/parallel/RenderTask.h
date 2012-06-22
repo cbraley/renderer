@@ -1,12 +1,12 @@
 #ifndef RENDER_TASK_H
 #define RENDER_TASK_H
 
-#include "ImageSampler.h"
-#include "ImageSensor.h"
-#include "Camera.h"
-#include "Integrator.h"
-#include "Scene.h"
-#include "ProgressMeter.h"
+#include "imsampling/ImageSampler.h"
+#include "imsampling/ImageSensor.h"
+#include "cameras/Camera.h"
+#include "integrators/Integrator.h"
+#include "scene/Scene.h"
+#include "parallel/ProgressMeter.h"
 
 /**
  *  Base class that all other RenderTasks must derive from.

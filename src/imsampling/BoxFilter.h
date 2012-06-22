@@ -1,7 +1,7 @@
 #ifndef BOX_FILTER_H
 #define BOX_FILTER_H
 
-#include "ReconstructionFilter.h"
+#include "imsampling/ReconstructionFilter.h"
 
 /**
  *  Simplest possible reconstruction filter.

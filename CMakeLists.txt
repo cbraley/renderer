@@ -4,11 +4,11 @@
 #
 #    Version 1.0 - Oct 21, 2010
 #    Version 2.0 - August 19, 2011 - Updated the cmake file to use many subdirectores inside src.
+#    Version 3.0 - June 20 2012 - Completely redone to remove cruft and use built in cmake features instead of reinventing the wheel.
+#    All #include's now must explicitly specify the sub-directory in which the resulting .h file is in.  This is a better strategy for large projects 
+#    to avoid filename name-clashes and to enhance readability.
 #
-#TODO: Make debug and release versions
-#TODO: Allow subdirectories in ./test
 #------------------------------------------------------------------------------
-
 
 #------------------------------------------------------------------------------
 #Normally, you should only need to edit things in this section
@@ -17,154 +17,173 @@
 #The basics
 cmake_minimum_required(VERSION 2.8.0)
 project(CBRender)
-
-
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
-#Source files for utility code (these need to be MANUALLY edited)
-set(UTILS_S2RGB_SRCS utils/src/s_to_rgb.cpp)
+#set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 
 #Folders with library modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} CMakeModules)
 
-#Locations of various important things on disk
-set(SRC_DIR src)                #Root directory of all source code
-set(TEST_DIR test)              #Root directory for unit test code
-set(MAIN_SRC_FILE src/main.cpp) #File with main function for renderer
-
 #Locations of output executables
-set(CREN_APP_RELEASE               bin/cren_rel)        #Release binary
-set(CREN_APP_RELEASE_WITH_DSYMBOLS bin/cren_rds)        #Release with debug symbols
-set(CREN_APP_DEBUG                 bin/cren_debug)      #Debug binary
-set(CREN_APP_TEST                  bin/cren_test)       #Test binary
-#Utility programs
-set(CREN_APP_SPEC2RGB              utils/bin/spec2rgb)  #Test binary
+set(CREN_APP_RELEASE               bin/cren_rel)      #Release binary
+set(CREN_APP_RELEASE_WITH_DSYMBOLS bin/cren_rds)      #Release with debug symbols
+set(CREN_APP_DEBUG                 bin/cren_debug)    #Debug binary
+set(CREN_APP_TEST                  bin/cren_test)     #Test binary
+set(CREN_APP_GUI                   bin/cren_gui)      #GUI binary
+
 
 #TODO: Figure out how to do this
 #set(ADDITIONAL_MAKE_CLEAN_FILES    gmon.out  test/tmp/* )
 
+#Root directory in which all code is located
+set(BASE_SOURCE_DIR src)
+set(GUI_BASE_PATH "${BASE_SOURCE_DIR}/gui")
+
+#Location of unit tests
+set(UNIT_TEST_LOC "${BASE_SOURCE_DIR}/test/unit_tests")
+
+#Path to auto-generated file of unit tests(see main_test.cpp)
+set(AUTOGENED_UNITTEST_FILE_NAME "${UNIT_TEST_LOC}/tests_auto_generated.h")
+set(AUTOGENED_UNITTEST_COMMAND "./${BASE_SOURCE_DIR}/scripts/autogenerate_unit_test_header.py")
+
+message(STATUS "Command is:  ${AUTOGENED_UNITTEST_COMMAND}")
+message(STATUS "Out file is: ${AUTOGENED_UNITTEST_FILE_NAME}")
+
+#Get all unit test files
+file(GLOB_RECURSE ALL_UNITTESTS_RECURSIVE ${UNIT_TEST_LOC}/test*.h)
+
+#Fix all paths to be relative
+set(ALL_TEST_FILES_REL "")
+foreach(CURR_FILE ${ALL_UNITTESTS_RECURSIVE})
+    file(RELATIVE_PATH temp ${CMAKE_SOURCE_DIR}/${BASE_SOURCE_DIR} ${CURR_FILE})
+    list(APPEND ALL_TEST_FILES_REL ${temp})
+endforeach()
+
+#Print all test files
+message(STATUS "List of unit tests(located in ${UNIT_TEST_LOC}):")
+foreach(FILE ${ALL_TEST_FILES_REL})
+    message(STATUS "\t${FILE}")
+endforeach()
+
+
 #Don't edit below this line under normal circumstances -----------------------
 
-#------------------------------------------------------------------------------
-#This section of code gets all source files (.cpp) in all subdirectories
-#inside ./src.
-#It prints info as it goes, and also adds each subdirectory to the
-#INCLUDE_DIRECTORIES list.
-#------------------------------------------------------------------------------
+include_directories(${BASE_SOURCE_DIR})
+message(STATUS "Path to root source directory: ${BASE_SOURCE_DIR}")
 
-#Get a list of all subdirectories inside of the main source directory
-set(SRC_FOLDERS_LIST "") #Keep a list of all directories containing source code
-FILE(GLOB ALL_FILES ${SRC_DIR} ${SRC_DIR}/*)
-FOREACH(_FILE ${ALL_FILES})
-    IF(IS_DIRECTORY ${_FILE}) #We found a dir; add it to the list
-        INCLUDE_DIRECTORIES(${_FILE})
-        set(SRC_FOLDERS_LIST ${SRC_FOLDERS_LIST} ${_FILE})
-    ENDIF()
-ENDFOREACH()
-
-#Print out all the subdirectories
-message(STATUS "Source folders:")
-FOREACH(CURR_FOLDER ${SRC_FOLDERS_LIST})
-    message(STATUS "    ${CURR_FOLDER}")
-ENDFOREACH()
-
-#Collect all of the source files in each folder, and print them
-#so we see which files are in which source directories
-message(STATUS "Source files in each subdirectory:")
-set(ALL_SOURCE_FILES "")
-FOREACH(CURR_FOLDER ${SRC_FOLDERS_LIST})
-
-    #Print the subdir we are in
-    message(STATUS "    ${CURR_FOLDER}")
-
-    #Get the soure files in the current subdir
-    FILE(GLOB CURR_SRCS ${CURR_FOLDER}/*cpp)
-
-    #Loop through all the files in that folder
-    FOREACH(CURR_FILE ${CURR_SRCS})
-        message(STATUS "        ${CURR_FILE}")
-    ENDFOREACH()
-
-    #Append to the source file list
-    set(ALL_SOURCE_FILES ${ALL_SOURCE_FILES} ${CURR_SRCS})
-ENDFOREACH()
-
-#Print out all the source files, without directory info
-message(STATUS "Final source file list:")
-FOREACH(CURR_SRC_FILE ${ALL_SOURCE_FILES})
-    message(STATUS "    ${CURR_SRC_FILE}")
-ENDFOREACH()
-
-#We now search for test source files; but we don't look into subdirectories since the
-#./test folder has none
-FILE(GLOB ALL_TEST_SOURCES ${TEST_DIR}/*cpp)
-INCLUDE_DIRECTORIES(${TEST_DIR})
-
-#Print out all the test sources
-message(STATUS "Test folder: ${TEST_DIR}")
-set(ALL_TEST_SOURCES ${ALL_TEST_SOURCES} ${ALL_SOURCE_FILES})
+#Each .cpp file that contains an int main(int, char**) function is listed below
+set(MAIN_CPP_CMD_LINE "${BASE_SOURCE_DIR}/main.cpp") 
+set(MAIN_CPP_GUI "${BASE_SOURCE_DIR}/main_gui.cpp")
+set(MAIN_CPP_UNIT_TESTS "${BASE_SOURCE_DIR}/main_test.cpp")
+#List of all files containing main(int, char**) functions
+set(MAIN_CPP_LIST_ALL ${MAIN_CPP_CMD_LINE} ${MAIN_CPP_GUI} ${MAIN_CPP_UNIT_TESTS})
+#Print list of all "main" files
+message(STATUS "All the main files are: ${MAIN_CPP_LIST_ALL}")
 
 
-#Filter out the main renderer .cpp file from the tests
-set(BAD_FILE "error")
-set(TESTS_FILTERED "")
-FOREACH(TEST_SRC_FILE ${ALL_TEST_SOURCES})
-    IF(NOT "${TEST_SRC_FILE}" MATCHES ".*${MAIN_SRC_FILE}")
-        set(TESTS_FILTERED ${TESTS_FILTERED} ${TEST_SRC_FILE})
-    ELSE()
-        message(STATUS "    Filtered out: ${TEST_SRC_FILE} from the test sources.")
-        set(BAD_FILE ${TEST_SRC_FILE})
-    ENDIF()
-ENDFOREACH()
-set(ALL_TEST_SOURCES ${TESTS_FILTERED})
-message(STATUS "Source files for tests:")
-FOREACH(TEST_SRC_FILE ${ALL_TEST_SOURCES})
-    message(STATUS "    ${TEST_SRC_FILE}")
-ENDFOREACH()
+#Recursively find all .cpp files
+file(GLOB_RECURSE ALL_CPP_FILES_RECURSIVE ${BASE_SOURCE_DIR}/*.cpp)
+#Now convert all file paths into paths relative to the project root directory
+set(ALL_CPP_FILES_REL "")
+foreach(CURR_FILE ${ALL_CPP_FILES_RECURSIVE})
+    file(RELATIVE_PATH temp ${CMAKE_SOURCE_DIR} ${CURR_FILE})
+    list(APPEND ALL_CPP_FILES_REL ${temp})
+endforeach()
 
 
-#Make sure not to include the .cpp file with the renderer's main function
-#in the test app
-list(REMOVE_ITEM ALL_TEST_SOURCES ${MAIN_SRC_FILE})
+#Remove the files containing a main function from the list of .cpp files
+#If we left these in, we get multiple entry points(main functions) error when compiling
+foreach(CURR_MAIN_FILE ${MAIN_CPP_LIST_ALL})
+    list(REMOVE_ITEM ALL_CPP_FILES_REL ${CURR_MAIN_FILE})
+endforeach()
 
-#Setup the source files for the utility spec2rgb
-set(SPEC2RGB_SRCS ${ALL_SOURCE_FILES})
-set(SPEC2RGB_SRCS ${SPEC2RGB_SRCS} ${UTILS_S2RGB_SRCS})
-list(REMOVE_ITEM SPEC2RGB_SRCS ${BAD_FILE})
-
-
-message(STATUS "Source files for spec2rgb:")
-FOREACH(SF ${SPEC2RGB_SRCS})
-    message(STATUS "    ${SF}")
-ENDFOREACH()
-
-
-#------------------------------------------------------------------------------
-#Now that that is done; we must add our source files to the build
-#------------------------------------------------------------------------------
-set(GUI_CORE_SOURCES ${ALL_SOURCE_FILES})
-list(REMOVE_ITEM GUI_CORE_SOURCES /home/cab6fh/Documents/Projects/Render_new/src/main.cpp) #TODO: Unhardcode!
-list(REMOVE_ITEM GUI_CORE_SOURCES ~/Documents/Projects/Render_new/src/main.cpp) #TODO: Unhardcode!
-list(REMOVE_ITEM GUI_CORE_SOURCES /home/cbraley/Documents/Projects/Render_1/src/main.cpp) #TODO: Unhardcode!
-list(REMOVE_ITEM GUI_CORE_SOURCES /home/cbraley/Documents/Projects/git_ren/src/main.cpp) #TODO: Unhardcode!
-list(REMOVE_ITEM GUI_CORE_SOURCES /home/cbraley/Documents/Projects/git_ren/renderer/src/main.cpp) #TODO: Unhardcode!
-list(REMOVE_ITEM GUI_CORE_SOURCES /home/cbraley/Documents/Projects/git_ren/renderer/src/main_gui.cpp) #TODO: Unhardcode!
-
-add_subdirectory(gui)
-
-set(CBRender_SRCS ${ALL_SOURCE_FILES})
-set(CBRender_TEST_SRCS ${ALL_TEST_SOURCES})
+#We want two lists
+#    ALL_CPP_FILES_REL,     which is all .cpp files that are NOT in the GUI
+#    ALL_CPP_GUI_FILES_REL, which is all .cpp files that ARE used in the GUI
+set(ALL_CPP_GUI_FILES_REL     "")
+set(ALL_CPP_NON_GUI_FILES_REL "")
+foreach(FILE ${ALL_CPP_FILES_REL})
+    if("${FILE}" MATCHES "${GUI_BASE_PATH}.*")
+        list(APPEND ALL_CPP_GUI_FILES_REL     ${FILE})
+    else()
+        list(APPEND ALL_CPP_NON_GUI_FILES_REL ${FILE})
+    endif()
+endforeach()
+set(ALL_CPP_FILES_REL ${ALL_CPP_NON_GUI_FILES_REL})
 
 
-#set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_BUILD_TYPE Debug)
-#add_executable(${CREN_APP_RELEASE}               ${CBRender_SRCS})
-#add_executable(${CREN_APP_RELEASE_WITH_DSYMBOLS} ${CBRender_SRCS})
-add_executable(${CREN_APP_DEBUG}                 ${CBRender_SRCS}      )
-add_executable(${CREN_APP_TEST}                  ${CBRender_TEST_SRCS} )
-#add_executable(${CREN_APP_SPEC2RGB}              ${SPEC2RGB_SRCS}      )
-#set(CMAKE_CXX_COMPILER clang)
 
+#Print list of all source files
+message(STATUS "All source files(excluding files with a main function and GUI code):")
+foreach(FILE ${ALL_CPP_FILES_REL})
+    message(STATUS "\t${FILE}")
+endforeach()
+
+
+#Print list of all source files for the GUI
+message(STATUS "All source files(including GUI files, exluding files with a main function):")
+foreach(FILE ${ALL_CPP_GUI_FILES_REL})
+    message(STATUS "\t${FILE}")
+endforeach()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#QT Related things for the GUI app
+set(QT_USE_QTOPENGL TRUE)
+find_package(Qt4 REQUIRED)
+
+#Find files we need to invoke QT MOC on
+set(MOC_FILES_LOC "${BASE_SOURCE_DIR}/gui")
+file(GLOB_RECURSE QT_FILES_TO_MOC ${MOC_FILES_LOC}/*.h)
+
+#Invoke MOC
+message(STATUS "Will apply QT MOC to:")
+foreach(FILE ${QT_FILES_TO_MOC})
+    message(STATUS "\t${FILE}")
+endforeach()
+QT4_WRAP_CPP(QT_MOCED_HEADERS ${QT_FILES_TO_MOC})
+
+#QT includes
+include(${QT_USE_FILE})
+add_definitions(${QT_DEFINITIONS})
+#include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+
+
+
+#Write to the auto-generated include file
+add_custom_command(
+    TARGET ${CREN_APP_TEST} PRE_BUILD
+    COMMAND "${AUTOGENED_UNITTEST_COMMAND}"
+    ARGS ""
+    COMMENT "Autogenerating unit test file: ${AUTOGENED_UNITTEST_FILE_NAME}" 
+    )
+
+
+#Add executables
+#    Command line renderer
+add_executable(${CREN_APP_DEBUG} ${ALL_CPP_FILES_REL} ${MAIN_CPP_CMD_LINE}  )
+message(STATUS "Added executable: ${CREN_APP_DEBUG}")
+#    Unit test program
+add_executable(${CREN_APP_TEST}  ${ALL_CPP_FILES_REL} ${MAIN_CPP_UNIT_TESTS})
+message(STATUS "Added executable: ${CREN_APP_TEST}")
+#    GUI executable
+add_executable(${CREN_APP_GUI} ${ALL_CPP_FILES_REL} ${QT_MOCED_HEADERS} ${ALL_CPP_GUI_FILES_REL} ${MAIN_CPP_GUI}) #Note that the MOCed headers go here
+
+#Link QT
+target_link_libraries(${CREN_APP_GUI} ${QT_LIBRARIES})
 
 #------------------------------------------------------------------------------
 #Set compilation flags
@@ -172,9 +191,9 @@ add_executable(${CREN_APP_TEST}                  ${CBRender_TEST_SRCS} )
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE}")
 #TODO: What are visual studios flags like?
 if (MSVC) #Visual Studio flags
-    set ( CMAKE_CXX_FLAGS "/")
-    set ( CMAKE_CXX_FLAGS_DEBUG "/")
-    set ( CMAKE_CXX_FLAGS_RELEASE  "/" )
+    set ( CMAKE_CXX_FLAGS "")
+    set ( CMAKE_CXX_FLAGS_DEBUG "")
+    set ( CMAKE_CXX_FLAGS_RELEASE  "" )
 endif ()
 
 if (CMAKE_COMPILER_IS_GNUCXX) #g++ flags
@@ -196,15 +215,6 @@ endif()
 #pthreads---------------------------------------------------------------------
 find_package(Threads REQUIRED)
 target_link_libraries(${CREN_APP_DEBUG} ${CMAKE_THREAD_LIBS_INIT})
-
-#find_package(PThreads REQUIRED)
-#if(NOT PTHREAD_FOUND)
-#    message(FATAL_ERROR "Need to have pthreads to build...")
-#else()
-#    include_directories(${PTHREAD_INCLUDE_DIR})
-#    target_link_libraries(${CREN_APP_DEBUG} ${PTHREAD_LIBRARIES})
-#endif(NOT PTHREAD_FOUND)
-
 
 
 #UnitTest++ ------------------------------------------------------------------

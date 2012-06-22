@@ -6,9 +6,9 @@
 #include <utility>
 #include <string>
 //--
-#include "Assert.h"
-#include "ColorConvMat.h"
-#include "Spectrum.h"
+#include "utils/Assert.h"
+#include "color/ColorConvMat.h"
+#include "color/Spectrum.h"
 
 /**
  *  Utility functions for conversion between various

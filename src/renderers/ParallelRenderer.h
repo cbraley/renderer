@@ -3,7 +3,7 @@
 
 #include <list>
 //--
-#include "Renderer.h"
+#include "renderers/Renderer.h"
 
 class ParallelRenderer : public Renderer{
 public:

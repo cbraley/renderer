@@ -1,9 +1,9 @@
-#include "Renderer.h"
+#include "renderers/Renderer.h"
 //--
 #include <iostream>
 //--
-#include "Assert.h"
-#include "Timer.h"
+#include "utils/Assert.h"
+#include "utils/Timer.h"
 
 //#define SILENT
 static const int PRINT_EVERY_X_PERCENT = 30;

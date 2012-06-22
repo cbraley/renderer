@@ -1,6 +1,6 @@
-#include "ImageSampler.h"
+#include "imsampling/ImageSampler.h"
 //--
-#include "Assert.h"
+#include "utils/Assert.h"
 
 ImageSampler::Sample::Sample(int idxX, int idxY, int numPixX, int numPixY) :
     x( float(idxX) + 0.5f), y( float(idxY) + 0.5f),

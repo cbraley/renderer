@@ -1,10 +1,10 @@
 #ifndef QUAD_H
 #define QUAD_H
 
-#include "RaySurfIntersection.h"
-#include "Shape.h"
-#include "Point.h"
-#include "Vector.h"
+#include "geom/RaySurfIntersection.h"
+#include "primitives/Shape.h"
+#include "math/Point.h"
+#include "math/Vector.h"
 
 class Quad : public Shape{
 public:

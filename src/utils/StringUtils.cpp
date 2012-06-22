@@ -1,6 +1,6 @@
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
 
-#include "Assert.h"
+#include "utils/Assert.h"
 
 enum CommonCharSet{ WHITESPACE, NUMBERS };
 

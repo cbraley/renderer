@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 //--
-#include "Spectrum.h"
+#include "color/Spectrum.h"
 
 namespace SpectrumPlotter{
 

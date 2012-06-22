@@ -3,7 +3,7 @@
 
 #include <iostream>
 //--
-#include "Assert.h"
+#include "utils/Assert.h"
 
 /**
  *  Utility functions for dealing with matrices.

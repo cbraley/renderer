@@ -3,9 +3,9 @@
 
 #include <vector>
 //--
-#include "RaySurfIntersection.h"
-#include "Ray.h"
-#include "Shape.h"
+#include "geom/RaySurfIntersection.h"
+#include "geom/Ray.h"
+#include "primitives/Shape.h"
 
 /**
  *  Base class for ray-tracing acceleration structures (BVH, KD-tree, etc).

@@ -1,11 +1,11 @@
 #ifndef POINT_LIGHT_H
 #define POINT_LIGHT_H
 
-#include "Spectrum.h"
-#include "Transform.h"
-#include "Light.h"
-#include "Assert.h"
-#include "Constants.h"
+#include "color/Spectrum.h"
+#include "math/Transform.h"
+#include "lights/Light.h"
+#include "utils/Assert.h"
+#include "utils/Constants.h"
 
 /**
  * Point light with no falloff and an arbitrary user-specified SPD.

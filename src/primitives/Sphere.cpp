@@ -1,9 +1,9 @@
-#include "Sphere.h"
+#include "primitives/Sphere.h"
 
-#include "MathUtils.h"
-#include "Assert.h"
-#include "Transform.h"
-#include "Constants.h"
+#include "math/MathUtils.h"
+#include "utils/Assert.h"
+#include "math/Transform.h"
+#include "utils/Constants.h"
 
 
 /// \brief Default c-tor creates a sphere with radius 1 at the orogin.

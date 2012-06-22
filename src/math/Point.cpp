@@ -1,4 +1,4 @@
-#include "Point.h"
+#include "math/Point.h"
 //--
 #include <cmath>
 

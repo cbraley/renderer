@@ -3,8 +3,8 @@
 
 #include <cmath>
 //--
-#include "ReconstructionFilter.h"
-#include "Assert.h"
+#include "imsampling/ReconstructionFilter.h"
+#include "utils/Assert.h"
 
 class TriangleFilter : public ReconstructionFilter{
 private:

@@ -1,14 +1,14 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Ray.h"
-#include "Scene.h"
-#include "ImageSensor.h"
-#include "ImageSampler.h"
-#include "Camera.h"
-#include "RaySurfIntersection.h"
-#include "Integrator.h"
-#include "ImageTypes.h"
+#include "geom/Ray.h"
+#include "scene/Scene.h"
+#include "imsampling/ImageSensor.h"
+#include "imsampling/ImageSampler.h"
+#include "cameras/Camera.h"
+#include "geom/RaySurfIntersection.h"
+#include "integrators/Integrator.h"
+#include "imageio/ImageTypes.h"
 
 
 /**

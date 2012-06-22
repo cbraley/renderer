@@ -1,8 +1,8 @@
 #ifndef POINT_H
 #define POINT_H
 
-#include "Vector.h"
-#include "Assert.h"
+#include "math/Vector.h"
+#include "utils/Assert.h"
 
 /**
  *  Simple 3D point class.

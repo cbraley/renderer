@@ -1,11 +1,11 @@
-#include "SpectrumPlotter.h"
+#include "color/SpectrumPlotter.h"
 //--
 #include <sstream>
 #include <fstream>
 #include <limits>
 //--
-#include "ColorUtils.h"
-#include "Assert.h"
+#include "color/ColorUtils.h"
+#include "utils/Assert.h"
 
 namespace SpectrumPlotter{
 

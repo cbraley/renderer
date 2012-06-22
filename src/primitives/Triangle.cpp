@@ -1,7 +1,7 @@
-#include "Triangle.h"
+#include "primitives/Triangle.h"
 //--
-#include "Assert.h"
-#include "GeomUtils.h"
+#include "utils/Assert.h"
+#include "utils/GeomUtils.h"
 
 Triangle::Triangle(const Point& pt1, const Point& pt2, const Point& pt3) :
     Shape(Transform()), v0(pt1), v1(pt2), v2(pt3)

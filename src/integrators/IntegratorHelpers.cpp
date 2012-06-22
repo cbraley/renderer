@@ -1,9 +1,9 @@
-#include "IntegratorHelpers.h"
+#include "integrators/IntegratorHelpers.h"
 //--
-#include "Assert.h"
-#include "GeomUtils.h"
-#include "Vector.h"
-#include "BRDFGeom.h"
+#include "utils/Assert.h"
+#include "utils/GeomUtils.h"
+#include "math/Vector.h"
+#include "materials/BRDFGeom.h"
 
 
 

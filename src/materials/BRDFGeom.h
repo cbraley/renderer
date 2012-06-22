@@ -3,10 +3,10 @@
 
 #include <cmath>
 //--
-#include "Vector.h"
-#include "Constants.h"
-#include "Assert.h"
-#include "MathUtils.h"
+#include "math/Vector.h"
+#include "utils/Constants.h"
+#include "utils/Assert.h"
+#include "math/MathUtils.h"
 
 //TODO: Conversion to from halfangle parameterization(i.e Symon's) to spherical angles
 

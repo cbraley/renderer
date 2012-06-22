@@ -1,4 +1,4 @@
-#include "Normal.h"
+#include "math/Normal.h"
 
 bool Normal::operator==(const Normal& other)const{
     return (this == &other) ||

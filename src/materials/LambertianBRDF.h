@@ -1,9 +1,9 @@
 #ifndef LAMBERTIAN_BRDF_H
 #define LAMBERTIAN_BRDF_H
 
-#include "Spectrum.h"
-#include "BRDF.h"
-#include "Vector.h"
+#include "color/Spectrum.h"
+#include "materials/BRDF.h"
+#include "math/Vector.h"
 
 class LambertianBRDF : public BRDF{
 public:

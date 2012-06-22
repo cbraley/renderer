@@ -18,12 +18,12 @@
 #include <Eigen/Core>
 #include <Eigen/LU>
 //--
-#include "Vector.h"
-#include "Normal.h"
-#include "Point.h"
-#include "Assert.h"
-#include "Ray.h"
-#include "BoundingBox.h"
+#include "math/Vector.h"
+#include "math/Normal.h"
+#include "math/Point.h"
+#include "utils/Assert.h"
+#include "geom/Ray.h"
+#include "geom/BoundingBox.h"
 
 /**
  *  4x4 Transformation matrix.

@@ -2,35 +2,36 @@
 #include <iostream>
 #include <algorithm>
 //--
-#include "Constants.h"
-#include "Renderer.h"
-#include "SpectrumPlotter.h"
-#include "Sphere.h"
+#include "utils/Constants.h"
+#include "renderers/Renderer.h"
+#include "color/SpectrumPlotter.h"
+#include "primitives/Sphere.h"
 
-#include "IntersectionCheckIntegrator.h"
-#include "DirectLightIntegrator.h"
+#include "integrators/IntersectionCheckIntegrator.h"
+#include "integrators/DirectLightIntegrator.h"
 
-#include "Shape.h"
-#include "RNGs.h"
-#include "NoAccelStructure.h"
-#include "Spectrum.h"
-#include "PointLight.h"
-#include "ImageSampler.h"
-#include "JitteredSampler.h"
-#include "BoxFilter.h"
-#include "GaussianFilter.h"
-#include "TriangleFilter.h"
-#include "SceneGen.h"
-#include "ToneMap.h"
-#include "StringUtils.h"
-#include "Quad.h"
-#include "Triangle.h"
-#include "Scene.h"
-#include "RNG.h"
+#include "math/Normal.h"
 
-#include "ParallelRenderer.h"
+#include "primitives/Shape.h"
+#include "utils/RNGs.h"
+#include "accel/NoAccelStructure.h"
+#include "color/Spectrum.h"
+#include "lights/PointLight.h"
+#include "imsampling/ImageSampler.h"
+#include "imsampling/JitteredSampler.h"
+#include "imsampling/BoxFilter.h"
+#include "imsampling/GaussianFilter.h"
+#include "imsampling/TriangleFilter.h"
+#include "scenegen/SceneGen.h"
+#include "imageio/ToneMap.h"
+#include "utils/StringUtils.h"
+#include "primitives/Quad.h"
+#include "primitives/Triangle.h"
+#include "scene/Scene.h"
 
-#include "ImageIO.h"
+#include "renderers/ParallelRenderer.h"
+
+#include "imageio/ImageIO.h"
 
 //Scene variables
 static Transform camToWorld;

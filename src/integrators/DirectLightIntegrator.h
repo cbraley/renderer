@@ -1,7 +1,7 @@
 #ifndef DIRECT_LIGHT_INTEGRATOR_H
 #define DIRECT_LIGHT_INTEGRATOR_H
 
-#include "Integrator.h"
+#include "integrators/Integrator.h"
 
 class DirectLightIntegrator : public Integrator{
 public:

@@ -1,7 +1,7 @@
-#include "LambertianBRDF.h"
+#include "materials/LambertianBRDF.h"
 //--
-#include "Assert.h"
-#include "Constants.h"
+#include "utils/Assert.h"
+#include "utils/Constants.h"
 
 //#define ASSERT_FAIL_WHEN_OUTSIDE_WAVELEN_RANGE
 
