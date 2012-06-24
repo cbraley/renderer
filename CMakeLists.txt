@@ -19,8 +19,8 @@ cmake_minimum_required(VERSION 2.8.0)
 project(CBRender)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
-#set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Debug)
 
 #Folders with library modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} CMakeModules)
@@ -228,5 +228,21 @@ if(UTPP_LIBRARY)
     target_link_libraries(${CREN_APP_TEST} ${UTPP_LIBRARY})
 else()
     message(FATAL_ERROR "Could not find unittest++")
+endif()
+
+
+
+#Doxygen ----------------------------------------------------------------------
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} 
+    COMMENT "Generating Doxygen docs" VERBATIM)
+
+    #Delete documentation on "make clean"
+    #TODO: Why does the below not work? We want to be able to clean up documentation on "make clean"...
+    #set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "doc/html doc/latex")
+else()
+    message(WARNING "Warning - Could not find Doxygen and thus won't generate documentation!")
 endif()
 
