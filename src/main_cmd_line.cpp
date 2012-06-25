@@ -12,7 +12,6 @@
 #include "imsampling/TriangleFilter.h"
 #include "primitives/Quad.h"
 #include "primitives/Triangle.h"
-#include "renderers/ParallelRenderer.h"
 */
 #include "scene/Scene.h"
 #include "imageio/ToneMap.h"
@@ -21,6 +20,7 @@
 #include "color/Spectrum.h"
 #include "integrators/DirectLightIntegrator.h"
 #include "renderers/Renderer.h"
+#include "renderers/ParallelRenderer.h"
 #include "accel/NoAccelStructure.h"
 #include "imsampling/JitteredSampler.h"
 #include "imsampling/ImageSampler.h"

@@ -1,9 +1,6 @@
 TODO:
 
     -Include a factory for spectral data so we can do things like get a black spectra etc.
-
-    -Get pthreads working
-
     -Remove Connely Barne's writing PFM code
 
 

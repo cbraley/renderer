@@ -23,7 +23,8 @@ set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_BUILD_TYPE Debug)
 
 #Folders with library modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} CMakeModules)
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} CMakeModules)
+#set(CMAKE_MODULE_PATH CMakeModules)
 
 #Locations of output executables
 set(CREN_APP_RELEASE               bin/cren_rel)      #Release binary
@@ -197,10 +198,10 @@ if (MSVC) #Visual Studio flags
 endif ()
 
 if (CMAKE_COMPILER_IS_GNUCXX) #g++ flags
-    #set ( CMAKE_CXX_FLAGS "-Wall -m64 -Wextra -ansi -pedantic -msse3 -Wextra -Wno-long-long -lpthread") #TODO: Get pthreads working!
+    #set ( CMAKE_CXX_FLAGS "-Wall -m64 -Wextra -ansi -pedantic -msse3 -Wextra -Wno-long-long")
     #set ( CMAKE_CXX_FLAGS_DEBUG "-g -fno-inline -O0 -Wall -pg -ggdb")
     #set ( CMAKE_CXX_FLAGS_RELEASE  "-O3 -funroll-loops -ffast-math -finline-functions" )
-    set ( CMAKE_CXX_FLAGS "-lpthread") #TODO: Get pthreads working!
+    set ( CMAKE_CXX_FLAGS "") 
     set ( CMAKE_CXX_FLAGS_DEBUG "-O0")
     set ( CMAKE_CXX_FLAGS_RELEASE  "-O3" )
 endif ()
@@ -216,8 +217,17 @@ endif()
 
 
 #pthreads---------------------------------------------------------------------
+set(CMAKE_THREAD_PREFER_PTHREAD 1) #In the presence of choices, use pthreads
 find_package(Threads REQUIRED)
-target_link_libraries(${CREN_APP_DEBUG} ${CMAKE_THREAD_LIBS_INIT})
+if(${Threads_FOUND})
+    message("Successfully found threading library.")
+    target_link_libraries(${CREN_APP_GUI}   ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(${CREN_APP_DEBUG} ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(${CREN_APP_TEST}  ${CMAKE_THREAD_LIBS_INIT})
+else()
+    message(FATAL_ERROR "Could not find a suitable threads library(usually pthreads)!")
+endif()
+
 
 
 #UnitTest++ ------------------------------------------------------------------
@@ -228,6 +238,7 @@ find_library(UTPP_LIBRARY
     PATHS ${UTPP_DIR}/bin /usr/lib /usr/local/lib
 )
 if(UTPP_LIBRARY)
+    message("Successfully found unittest++.")
     target_link_libraries(${CREN_APP_TEST} ${UTPP_LIBRARY})
 else()
     message(FATAL_ERROR "Could not find unittest++")
@@ -238,6 +249,7 @@ endif()
 #Doxygen ----------------------------------------------------------------------
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
+    message("Successfully found Doxygen.")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
     add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} 
     COMMENT "Generating Doxygen docs" VERBATIM)
