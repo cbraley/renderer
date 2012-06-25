@@ -2,61 +2,41 @@
 #include <iostream>
 #include <algorithm>
 //--
-#include "utils/Constants.h"
-#include "renderers/Renderer.h"
+/*
 #include "color/SpectrumPlotter.h"
 #include "primitives/Sphere.h"
-
 #include "integrators/IntersectionCheckIntegrator.h"
-#include "integrators/DirectLightIntegrator.h"
-
 #include "math/Normal.h"
-
 #include "primitives/Shape.h"
-#include "utils/RNGs.h"
-#include "accel/NoAccelStructure.h"
-#include "color/Spectrum.h"
 #include "lights/PointLight.h"
-#include "imsampling/ImageSampler.h"
-#include "imsampling/JitteredSampler.h"
-#include "imsampling/BoxFilter.h"
-#include "imsampling/GaussianFilter.h"
 #include "imsampling/TriangleFilter.h"
-#include "scenegen/SceneGen.h"
-#include "imageio/ToneMap.h"
-#include "utils/StringUtils.h"
 #include "primitives/Quad.h"
 #include "primitives/Triangle.h"
-#include "scene/Scene.h"
-
 #include "renderers/ParallelRenderer.h"
-
+*/
+#include "scene/Scene.h"
+#include "imageio/ToneMap.h"
 #include "imageio/ImageIO.h"
+#include "utils/StringUtils.h"
+#include "color/Spectrum.h"
+#include "integrators/DirectLightIntegrator.h"
+#include "renderers/Renderer.h"
+#include "accel/NoAccelStructure.h"
+#include "imsampling/JitteredSampler.h"
+#include "imsampling/ImageSampler.h"
+#include "imsampling/BoxFilter.h"
+#include "scenegen/SceneGen.h"
+#include "imsampling/GaussianFilter.h"
+
 
 //Scene variables
 static Transform camToWorld;
 static float fov   = 20.0f;
 static float zNear = 0.0f;
-static float zFar  = MAX_FLOAT_VAL;
+static float zFar  = Constants::MAX_FLOAT_VAL;
 static int spp     = 300;
 
-//Constants
-static const Point SCENE_CENTER(0.0f, 0.0f, 10.0f);
-static const int NUM_MATERIALS = 30;
 
-//Functions for spectrum creation
-float red  (float nm){ return nm > 650.0f ? 1.0f : 0.0f;                  }
-float green(float nm){ return (nm > 500.0f && nm < 600.0f) ? 1.0f : 0.0f; }
-float blue (float nm){ return nm < 500.0f ? 1.0f : 0.0f;                  }
-
-//p = Location, div = amount by which to divide light spectrum
-std::vector<Light*> createLightAtPoint(const Point& p, float div){
-    std::vector<Light*> lights;
-    lights.push_back(
-        new PointLight(Spectrum(Spectrum::CIE_ILLUM_E) / div,
-        Transform::translate( Vector(p.x, p.y, p.z) ) ) );
-    return lights;
-}
 
 
 int main(int argc, char** argv){
@@ -80,74 +60,35 @@ int main(int argc, char** argv){
     if(argc >= 9){ numBounces = atof(argv[8]); }
     camToWorld = Transform::translate(Vector(camX, camY, camZ));
 
-    //Setup geometry
-    std::cout << "Creating scene..." << std::endl;
+    //Generate scene
+    std::vector<Shape*> shapes;
+    std::vector<Light*> lights;
+    Camera* cam = SceneGen::genCornellBox(shapes, lights);
+    std::cout << *cam << std::endl;
 
-    //Scene
-    std::vector<Shape*> shapes;           //Geometry
-    std::vector<PhongMaterial> materials; //Materials to randomly assign to objects
-    std::vector<Light*> lights;           //Point sources
-    Camera* cam = NULL;                   //Eye
-
-
-    //Generate 3 random RGB materials
-    const Spectrum R_SPEC(red     ,400.0f,720.0f,10.0f);
-    const Spectrum G_SPEC(green   ,400.0f,720.0f,10.0f);
-    const Spectrum B_SPEC(blue    ,400.0f,720.0f,10.0f);
-    PhongMaterial Rs (R_SPEC , Spectrum(Spectrum::CIE_ILLUM_E) / 100.0f, 10.0f, 0.1f);
-    PhongMaterial Gs (G_SPEC , Spectrum(Spectrum::CIE_ILLUM_E) / 100.0f, 10.0f, 0.1f);
-    PhongMaterial Bs (B_SPEC , Spectrum(Spectrum::CIE_ILLUM_E) / 100.0f, 10.0f, 0.1f);
-    materials.push_back(Rs);
-    materials.push_back(Gs);
-    materials.push_back(Bs);
-
-
-    //Sphere flake
-    bool SPHERE_FLAKE   = false;
-    bool CORNELL_BOX    = true;
-    bool SIMPLE_SPHERES = false;
-    if(SPHERE_FLAKE){
-        std::cout << "Sphere Flake." << std::endl;
-        shapes = SceneGen::genSphereFlake(3, shapes, Point(0.0f,0.0f,0.0f), 1.0f, materials, rot);
-        lights = createLightAtPoint(Point(0.0f, 0.0f, 0.0f), 100.0f);
-        //cam = new Camera(camToWorld, fov, zNear, zFar, width, height);
-        cam = NULL;
-    }else if(CORNELL_BOX){
-        std::cout << "Cornell Box." << std::endl;
-        cam = SceneGen::genCornellBox(shapes, lights);
-        std::cout << *cam << std::endl;
-    }else if(SIMPLE_SPHERES){
-//        std::cout << "Spheres." << std::endl;
-//        shapes = SceneGen::genSceneSpheres();
-        shapes = SceneGen::genTriangleScene();
-        lights = createLightAtPoint(Point(0.0f, 0.0f, 0.0f), 100.0f);
-        //cam = new Camera(camToWorld, fov, zNear, zFar, width, height);
-        cam = NULL;
-    }else{
-        return 1;
-    }
-    std::cout << "Done creating scene." << std::endl;
-
-    //Setup things needed by renderer
+    //Setup image plane and sampler
     const float pixelWidth  = 1.0f;
     const float pixelHeight = 1.0f;
     ImageSampler* sampler = new JitteredSampler(width, height, spp,
         pixelWidth / 2.0f, pixelHeight / 2.0f); //Jitter x and jitter Y
-
     ImageSensor* ccd = new ImageSensor(width, height, NULL ,
-        //new BoxFilter(pixelWidth, pixelHeight)
         new GaussianFilter(3.0f, pixelWidth, pixelHeight)
     );
+
+    //Acceleration structure
     AccelStructure* accelScene = new NoAccelStructure();
     accelScene->buildAccelStructure(shapes);
+
+    //Full scene
     Scene* scene = new Scene(accelScene, lights);
+
+    //Setup integrator and renderer
     Integrator* integrator = new DirectLightIntegrator();
-//    Integrator* integrator = new WhittedIntegrator();
+    Renderer* rt = new Renderer();
+    //Renderer* rt = new ParallelRenderer(32, 32, 4);
 
     //Render a picture
     std::cout << "Rendering scene..." << std::endl;
-//    Renderer* rt = new Renderer();
-    Renderer* rt = new ParallelRenderer(32, 32, 4);
     HDRImage* im = rt->render(sampler, cam, ccd, scene, integrator);
     std::cout << "Done rendering scene." << std::endl;
 

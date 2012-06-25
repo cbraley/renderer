@@ -144,9 +144,10 @@ static void* threadDoWork(void* argument){
 
             //If we did hit geometry, use an integrator to compute radiance
             //otherwise, just return a black spectrum
+            Integrator::IntegratorData idata;
             Spectrum pixelSampleColor;
             if(didHit){
-                pixelSampleColor = arg.integrator->radiance(arg.scene, ray, hit);
+                pixelSampleColor = arg.integrator->radiance(arg.scene, ray, hit, idata);
             }else{
                 pixelSampleColor = Spectrum(0.0f,
                     ColorConstants::MIN_NM_VIS, ColorConstants::MAX_NM_VIS);

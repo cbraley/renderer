@@ -27,7 +27,7 @@ float LambertianBRDF::f(const Vector& w_i, const Vector& w_o,
 #endif
 
     //Sample the BRDF
-    return (*specRef)(lambda) * INVERSE_PI_FLOAT;
+    return (*specRef)(lambda) * Constants::INVERSE_PI_FLOAT;
 }
 
 

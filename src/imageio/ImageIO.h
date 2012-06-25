@@ -2,6 +2,8 @@
 #define IMAGE_IO_H
 
 #include <string>
+#include <limits>
+#include <cstdlib>
 //--
 #include "imageio/ImageTypes.h"
 

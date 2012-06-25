@@ -147,6 +147,7 @@ Spectrum IntegratorHelpers::radianceEmitted(const Scene* scene, const Ray& ray,
 
 
 
+/*
 Spectrum IntegratorHelpers::radianceIndirect(const Scene* scene, const Ray& ray,
     const RaySurfIntersection& hit, const IntegratorHelpers::SpectralStrategy& ss,
     int maxBounce, int bounce)
@@ -197,21 +198,12 @@ Spectrum IntegratorHelpers::radianceIndirect(const Scene* scene, const Ray& ray,
                     radianceIndirect(scene, reflRay, newHit, ss, maxBounce, bounce + 1))
                     * sampWeight * PI_FLOAT;
 
-            /*
-            return
-                brdfSpec *
-                (
-                    (radianceDirect(scene, reflRay, newHit, ss) +
-                    radianceEmitted(scene, reflRay, newHit, ss) ) + /
-                    radianceIndirect(scene, reflRay, newHit, ss, maxBounce, bounce + 1)
-                ) *
-                PI_FLOAT * sampWeight;
-                */
         }
     }
 
     delete[] buf; buf = NULL;
     return ret;
 }
+*/
 
 

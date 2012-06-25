@@ -21,7 +21,7 @@ bool ImageIO::writePPM(const std::string& fileName, const LDRImage* const img,
     //PPM header
     f << "P6 "           << " " << std::endl;   //Magic number
     if(!comment.empty()){                       //Potentially write
-        f << "#" << comment << std::endl;              //user's comment
+        f << "#" << comment << std::endl;       //user's comment
     }
     f << img->width( ) << " " << std::endl << //Raster width
          img->height() << " " << std::endl << //Raster height

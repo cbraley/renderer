@@ -277,7 +277,7 @@ inline float Vector::angleNormalized(const Vector& b)const{
     const float dp = dot(b);
     if(dp < 0.0f){
         const Vector tempVec(-x - b.x, -y - b.y, -z - b.z);
-        return PI_FLOAT - 2.0f * asin(tempVec.magnitude() * 0.5f);
+        return Constants::PI_FLOAT - 2.0f * asin(tempVec.magnitude() * 0.5f);
     }else{
         const Vector tempVec(x - b.x, y - b.y, z - b.z);
         return 2.0f * asin(tempVec.magnitude() * 0.5f);

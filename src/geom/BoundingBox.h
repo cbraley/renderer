@@ -109,8 +109,8 @@ public:
 //-----------------------------------------------------------------------------
 
 inline BoundingBox::BoundingBox() :
-    minPoint(MAX_FLOAT_VAL, MAX_FLOAT_VAL, MAX_FLOAT_VAL),
-    maxPoint(-MIN_FLOAT_VAL, -MIN_FLOAT_VAL, -MIN_FLOAT_VAL)
+    minPoint( Constants::MAX_FLOAT_VAL,  Constants::MAX_FLOAT_VAL,  Constants::MAX_FLOAT_VAL),
+    maxPoint(-Constants::MIN_FLOAT_VAL, -Constants::MIN_FLOAT_VAL, -Constants::MIN_FLOAT_VAL)
 {}
 
 inline BoundingBox::BoundingBox(const BoundingBox& other) :

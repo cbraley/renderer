@@ -4,6 +4,7 @@
 #include "math/Point.h"
 #include "math/Vector.h"
 #include "utils/RNG.h"
+#include "utils/Constants.h"
 //--
 #include <cmath>
 
@@ -33,7 +34,7 @@ namespace GeomUtils{
         const float theta = acos( dir1.dot(dir2) );
 
         //If theta is near 0.0f, or near M_PI, then the three points are colinear
-        return fabs(theta - 0.0f) <= epsTol || fabs(theta - M_PI) <= epsTol;
+        return fabs(theta - 0.0f) <= epsTol || fabs(theta - Constants::PI_FLOAT) <= epsTol;
     }
 
 
@@ -77,8 +78,8 @@ namespace GeomUtils{
     inline Vector randomVecOnSphere(){
         RNG rng;
         //TODO: Factor out the RNG
-        const float phi   = rng.randomFloatOC(0.0f, TWO_PI_FLOAT);
-        const float theta = rng.randomFloatOC(0.0f, TWO_PI_FLOAT);
+        const float phi   = rng.randomFloatOC(0.0f, Constants::TWO_PI_FLOAT);
+        const float theta = rng.randomFloatOC(0.0f, Constants::TWO_PI_FLOAT);
         return Vector(
             sinf(theta) * cosf(phi),
             sinf(theta) * sinf(phi),

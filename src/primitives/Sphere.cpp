@@ -50,8 +50,8 @@ bool Sphere::intersect(const Ray& ray, RaySurfIntersection& res)const{
             return false;
         }else{
             //At least one hit in front of camera
-            slv.sol1 = slv.sol1 < 0.0f ? MAX_FLOAT_VAL : slv.sol1;
-            slv.sol2 = slv.sol2 < 0.0f ? MAX_FLOAT_VAL : slv.sol2;
+            slv.sol1 = slv.sol1 < 0.0f ? Constants::MAX_FLOAT_VAL : slv.sol1;
+            slv.sol2 = slv.sol2 < 0.0f ? Constants::MAX_FLOAT_VAL : slv.sol2;
             tHitFinal = std::min<float>(slv.sol1, slv.sol2);
         }
     }
@@ -76,7 +76,7 @@ BoundingBox Sphere::objectSpaceBound()const{
 }
 
 float Sphere::surfaceArea()const{
-    return 4.0f * PI_FLOAT * r * r;
+    return Constants::FOUR_PI_FLOAT * r * r;
 }
 
 

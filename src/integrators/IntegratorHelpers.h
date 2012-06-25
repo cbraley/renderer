@@ -31,15 +31,18 @@ namespace IntegratorHelpers{
 
 
     /**
-     *  Only sample DIRECT light.
+     *  Return the amount of light emitted by the scene geometry at 
+     *  intersection point "hit."
      */
     Spectrum radianceEmitted(const Scene* scene, const Ray& ray,
         const RaySurfIntersection& hit, const SpectralStrategy& ss);
 
 
+    /*
     Spectrum radianceIndirect(const Scene* scene, const Ray& ray,
         const RaySurfIntersection& hit, const SpectralStrategy& ss, 
         int maxBounce, int bounce = 0);
+    */
 
 }
 

@@ -197,9 +197,12 @@ if (MSVC) #Visual Studio flags
 endif ()
 
 if (CMAKE_COMPILER_IS_GNUCXX) #g++ flags
-    set ( CMAKE_CXX_FLAGS "-Wall -m64 -Wextra -ansi -pedantic -msse3 -Wextra -Wno-long-long -lpthread") #TODO: Get pthreads working!
-    set ( CMAKE_CXX_FLAGS_DEBUG "-g -fno-inline -O0 -Wall -pg -ggdb")
-    set ( CMAKE_CXX_FLAGS_RELEASE  "-O3 -funroll-loops -ffast-math -finline-functions" )
+    #set ( CMAKE_CXX_FLAGS "-Wall -m64 -Wextra -ansi -pedantic -msse3 -Wextra -Wno-long-long -lpthread") #TODO: Get pthreads working!
+    #set ( CMAKE_CXX_FLAGS_DEBUG "-g -fno-inline -O0 -Wall -pg -ggdb")
+    #set ( CMAKE_CXX_FLAGS_RELEASE  "-O3 -funroll-loops -ffast-math -finline-functions" )
+    set ( CMAKE_CXX_FLAGS "-lpthread") #TODO: Get pthreads working!
+    set ( CMAKE_CXX_FLAGS_DEBUG "-O0")
+    set ( CMAKE_CXX_FLAGS_RELEASE  "-O3" )
 endif ()
 
 if (CMAKE_COMPILER_IS_CLANG) #clang flags

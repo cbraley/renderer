@@ -51,7 +51,7 @@ public:
         const Vector& normal,
         const Point& lightSamplePt)const
     {
-        return spd / (FOUR_PI_FLOAT);
+        return spd / (Constants::FOUR_PI_FLOAT);
     }
 
 

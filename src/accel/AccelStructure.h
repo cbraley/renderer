@@ -6,6 +6,7 @@
 #include "geom/RaySurfIntersection.h"
 #include "geom/Ray.h"
 #include "primitives/Shape.h"
+#include "utils/Constants.h"
 
 /**
  *  Base class for ray-tracing acceleration structures (BVH, KD-tree, etc).
@@ -42,7 +43,7 @@ public:
      *   that all shapes should be counted.
      */
     virtual bool doesIntersect(const Ray& r,
-        float minDist = 0.0f, float maxDist = MAX_FLOAT_VAL,
+        float minDist = 0.0f, float maxDist = Constants::MAX_FLOAT_VAL,
         const Shape* ignoreShape = NULL)const = 0;
 
 

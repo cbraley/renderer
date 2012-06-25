@@ -79,8 +79,9 @@ HDRImage* Renderer::render(ImageSampler* sampler, Camera* cam, ImageSensor* ccd,
         //If we did hit geometry, use an integrator to compute radiance
         //otherwise, just return a black spectrum
         Spectrum pixelSampleColor;
+        Integrator::IntegratorData idata;
         if(didHit){
-            pixelSampleColor = integrator->radiance(scene, ray, hit);
+            pixelSampleColor = integrator->radiance(scene, ray, hit, idata);
         }else{
             pixelSampleColor = Spectrum(0.0f, MIN_NM_VIS, MAX_NM_VIS);
         }

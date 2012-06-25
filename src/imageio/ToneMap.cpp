@@ -44,8 +44,8 @@ LDRImage* toneMapMaxToWhite(HDRImage* in, bool minToBlack){
     //Find min and max
 #ifndef TONEMAP_USING_BRIGHTNESS
     float maxR, maxG, maxB, minR, minG, minB;
-    maxR = maxG = maxB = MIN_FLOAT_VAL;
-    minR = minG = minB = MAX_FLOAT_VAL;
+    maxR = maxG = maxB = Constants::MIN_FLOAT_VAL;
+    minR = minG = minB = Constants::MAX_FLOAT_VAL;
     for(int i = 0; i < in->width(); i++){
         for(int j = 0; j < in->height(); j++){
             const float r = *((*in)(i,j,0));

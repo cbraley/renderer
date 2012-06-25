@@ -59,8 +59,9 @@ void RenderTask::render(ProgressMeter* prog){
 
         //If we did hit geometry, use an integrator to compute radiance
         //otherwise, just add a black spectral sample
+        Integrator::IntegratorData idata;
         if(didHit){
-            Spectrum L = integ->radiance(scene, ray, hit);
+            Spectrum L = integ->radiance(scene, ray, hit, idata);
             ccd->addSample(s, &L);
         }else{
             ccd->addSample(s, &black);

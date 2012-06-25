@@ -104,11 +104,11 @@ namespace MathUtils{
     */
 
     inline float degreesToRads(float degrees){
-        return degrees * (PI_FLOAT / 180.0f);
+        return degrees * (Constants::PI_FLOAT / 180.0f);
     }
 
     inline float radsToDegrees(float rads){
-        return rads * (180.0f / PI_FLOAT);
+        return rads * (180.0f / Constants::PI_FLOAT);
     }
 
     template<typename T>

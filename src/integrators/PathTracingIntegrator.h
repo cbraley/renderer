@@ -6,6 +6,7 @@
 #include "math/Vector.h"
 #include "geom/Ray.h"
 
+/*
 class PathTracingIntegrator : public Integrator{
 public:
     PathTracingIntegrator(int maxNumBounces = 5, float probEmit = 0.25f);
@@ -15,5 +16,6 @@ private:
     int maxBounces;
     float pEmit;
 };
+*/
 
 #endif //PATH_TRACING_INTEGRATOR_H

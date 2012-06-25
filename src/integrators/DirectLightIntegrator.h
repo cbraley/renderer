@@ -8,7 +8,11 @@ public:
 
     DirectLightIntegrator();
 
-    virtual Spectrum radiance(const Scene* scene, const Ray& ray, const RaySurfIntersection& hit)const;
+    virtual Spectrum radiance(const Scene* scene, const Ray& ray,
+        const RaySurfIntersection& hit, 
+        Integrator::IntegratorData& iData
+        )const;
+
 };
 
 #endif //DIRECT_LIGHT_INTEGRATOR_H

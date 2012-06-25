@@ -5,7 +5,9 @@
 //--
 #include "materials/BRDFGeom.h"
 #include "math/Vector.h"
+#include "utils/Constants.h"
 
+using namespace Constants;
 using namespace BRDFGeom;
 
 SUITE(TestBRDFGeom){

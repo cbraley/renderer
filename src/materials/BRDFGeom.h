@@ -188,7 +188,7 @@ inline Vector BRDFGeom::sphericalCoordToVector(float theta, float phi){
     //Make sure angles are in [0, 2*Pi]
     return Vector(
         sinf(theta) * cosf(phi),
-        sinf(theta) * cosf(PI_OVER_2_FLOAT - phi),
+        sinf(theta) * cosf(Constants::PI_OVER_2_FLOAT - phi),
         cosf(theta)
     );
 }
@@ -216,7 +216,7 @@ inline Vector BRDFGeom::getMirrorReflVector(const Vector& omega_in){
     BRDFGeom::vectorToSphericalCoord(omega_in, theta, phi);
 
     //Mirror reflection direction is rotated by 90 degrees (pi)
-    return BRDFGeom::sphericalCoordToVector(theta, phi + PI_FLOAT);
+    return BRDFGeom::sphericalCoordToVector(theta, phi + Constants::PI_FLOAT);
 }
 
 
@@ -229,7 +229,7 @@ inline void BRDFGeom::genTangentFrameForIsotropicBRDF(const Vector& n, Vector& t
     //TODO: This could be sped up
     Vector f(0.0f, 0.0f, 0.0f);
     int minindex = -1;
-    float minVal = MAX_FLOAT_VAL;
+    float minVal = Constants::MAX_FLOAT_VAL;
     float temp = 0.0f;
     for(int i = 0; i < 3; i++){
         temp = abs( n[i] );
