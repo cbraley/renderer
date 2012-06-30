@@ -17,36 +17,19 @@ namespace Bits{
 ///  byte is first, whereas in a little endian system the most significant byte 
 ///  is last.
 inline bool isBigEndian(){
-    //dummy is 2 bytes, first all 0's second is all 0's then a final 1
-    const short int dummy = 1;
-    Assert(sizeof(short int) == 2); //Make sure shorts are 2 bytes on this platform
+    
+    Assert(sizeof(int) > sizeof(char));
+    //Should be true as long as we are not on a crazy embedded platform...
+    //...but nevertheless the standard does not mandate this
 
-    //Extract the second byte of "dummy"
-    const unsigned char b = ((unsigned char*)(&dummy))[0];
-
-    //For a big endian system, b will be 00000001
-    //whereas in a little endian system b will be 1000000 (in binary)
-    const unsigned char BIG_ENDIAN_RESULT    = 1;
-    const unsigned char LITTLE_ENDIAN_RESULT = 64;
-
-    //If the below assertion failes, we are either on a middle
-    //endian machine(astronomically unlikely...) or my code is broken
-    Assert(b == BIG_ENDIAN_RESULT || b == LITTLE_ENDIAN_RESULT);
-
-    return b == BIG_ENDIAN_RESULT;
-}
-
-inline void reverseBits(unsigned char* c){
-    //TODO: Implemenet
-}
-
-void swapEndianness(unsigned char* buf, int numBytes){
-    Assert(numBytes >= 0);
-    const unsigned char* bufEnd = buf + numBytes;
-    while(buf < bufEnd){
-        reverseBits(buf++);
+    const int dummy = 1;
+    if( *((char*)&dummy) == 1){
+        //Little endian!
+        return true;
+    }else{
+        //Big endian!
+        return false;
     }
-    //TODO: Swap the endianness of this whole buffer
 }
 
 /// \brief Print out system low level properties to an ostream.
@@ -61,7 +44,8 @@ void printSystemInfo(std::ostream& os){
 /// \brief Assert that this system is OK in terms of low level
 ///  expectations.
 void validateSystem(){
-    Assert(CHAR_BIT == 8);
+    Assert(CHAR_BIT == 8); //8 bits in a byte
+    Assert(sizeof(int) > sizeof(char)); //ints are larger than chars
 }
 
 }

@@ -3,6 +3,7 @@
 #include <fstream>
 //--
 #include "utils/Assert.h"
+#include "utils/Bits.h"
 
 
 bool ImageIO::writePPM(const std::string& fileName, const LDRImage* const img,
@@ -38,7 +39,6 @@ bool ImageIO::writePPM(const std::string& fileName, const LDRImage* const img,
 
     //PPM raster
     const int rows = img->height();
-    //unsigned char rgb[3] = {0,0,0};
     unsigned char* buf = new unsigned char[img->width() * 3];
     for(int r = 0; r < rows; r++){
         img->getScanline(r, buf);
@@ -53,63 +53,86 @@ bool ImageIO::writePPM(const std::string& fileName, const LDRImage* const img,
 
 
 
-
-
-
-/* Read/write 1 and 3 channel PFM files, public domain Connelly Barnes 2007. */
-
-
-
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-
-
-typedef unsigned char byte;
-
-inline static int is_little_endian() {
-  if (sizeof(float) != 4) { printf("Bad float size.\n"); exit(1); }
-  byte b[4] = { 255, 0, 0, 0 };
-  return *((float *) b) < 1.0;
-}
-
-
-
-//3 channel
-void write_pfm_file3(const char *filename, float *depth, int w, int h) {
-  FILE *f = fopen(filename, "wb");
-  double scale = 1.0;
-  if (is_little_endian()) { scale = -scale; }
-  fprintf(f, "PF\n%d %d\n%lf\n", w, h, scale);
-  int channels = 3;
-  for (int i = 0; i < w*h*channels; i++) {
-    float d = depth[i];
-    fwrite((void *) &d, 1, 4, f);
-  }
-  fclose(f);
-}
-
-
-//Single channel
-void write_pfm_file(const char *filename, float *depth, int w, int h) {
-  FILE *f = fopen(filename, "wb");
-  double scale = 1.0;
-  if (is_little_endian()) { scale = -scale; }
-  fprintf(f, "Pf\n%d %d\n%lf\n", w, h, scale);
-  for (int i = 0; i < w*h; i++) {
-    float d = depth[i];
-    fwrite((void *) &d, 1, 4, f);
-  }
-  fclose(f);
-}
-
-
-
-bool ImageIO::writePFM(const std::string& fileName, const HDRImage* const img,
-    const std::string& comment)
+static bool writePFMHeader(
+    const std::string& fileName,
+    const HDRImage* const hdr)
 {
-    HDRImage* hack = const_cast<HDRImage*>(img);
+    //See: http://netpbm.sourceforge.net/doc/pfm.html
 
-    write_pfm_file3(fileName.c_str(), (float*) (hack->getPixelBuf()), img->width(), img->height());
-    return true;
+    //Open an fstream in ASCII mode
+    std::fstream fs(fileName.c_str(), std::fstream::out);
+    if(! fs.good() ){
+        fs.close();
+        return false;
+    }
+
+    //Write the header
+    const std::string COLOR_IDENTIFIER_LINE("PF");
+    //const std::string GRAYSCALE_IDENTIFIER_LINE("Pf");
+    const std::string LITTLE_ENDIAN_STR("-1.000000");
+    const std::string BIG_ENDIAN_STR("1.000000");
+
+    fs << COLOR_IDENTIFIER_LINE << std::endl;
+    fs << hdr->width() << " " << hdr->height() << std::endl;
+    fs << (Bits::isBigEndian() ? BIG_ENDIAN_STR : LITTLE_ENDIAN_STR) << std::endl;
+
+
+    //Return whether the read went OK
+    bool ret = fs.good();
+    fs.close();
+    return ret;
 }
+    
+static bool writePFMRaster(
+    const std::string& fileName,
+    const HDRImage* const hdr)
+{
+    //See: http://netpbm.sourceforge.net/doc/pfm.html
+    std::fstream fs(fileName.c_str(),
+        std::fstream::out |    //Output stream
+        std::fstream::binary | //Binary data
+        std::fstream::ate |    //"AT End"(put data after header)
+        std::fstream::app      //All writes are appends
+    );
+    if(! fs.good() ){
+        fs.close();
+        return false;
+    }
+
+    //Write the raster, row by row
+    const int numCols = hdr->width();
+    float* rowBuf = new float[numCols * 3];
+    for(int y = 0; y < hdr->height(); y++){
+
+        //Copy data for a scanline
+        hdr->getScanline(y, rowBuf);
+
+        //Write a scanline
+        fs.write((const char*)rowBuf, sizeof(float) * numCols * 3);
+    }
+
+    delete[] rowBuf; rowBuf = NULL;
+
+    //Return whether the read went OK
+    bool ret = fs.good();
+    fs.close();
+    return ret;
+}
+
+
+bool ImageIO::writePFM(
+    const std::string& fileName,
+    const HDRImage* const hdr)
+{
+    Assert(hdr != NULL);
+
+    bool hok = writePFMHeader(fileName, hdr);
+    if(!hok){
+        return false;
+    }
+    bool rok = writePFMRaster(fileName, hdr);
+    return rok;
+}
+
+
+

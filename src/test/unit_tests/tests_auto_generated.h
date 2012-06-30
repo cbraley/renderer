@@ -15,3 +15,4 @@
 #include "test/unit_tests/testBRDFGeom.h"
 #include "test/unit_tests/testSphere.h"
 #include "test/unit_tests/testBoundingBox.h"
+#include "test/unit_tests/testImageIO.h"

@@ -43,7 +43,7 @@ public:
      *  location (x,y) at color channel d.  Modifcation to
      *  the image typically occurs through this function.
      *
-     *  If x or y are out of bounds, or d is not in {0,1,2}
+     *  If x or y are out of bounds, or d is not in {0,1,2,...,numChannels()}
      *  undefined behavior will occur and likely will crash the system.
      *
      *  @param w is the x location on the image.  Indices start at 0
@@ -57,12 +57,34 @@ public:
     PIXEL_T* operator()(int x, int y, int d);
 
     /**
-     *  Read a pixel value.
+     *  Read all color channels at position (x,y).
+     *  If x or y are out of bounds a crash will likely occur.
+     *
+     *  @param x is the x position on the raster.
+     *  @param y is the y position on the raster.
+     *  @param out is an array of length N_CHANNELS through which values are returned.
      */
     void readPixel(int x, int y, PIXEL_T out[N_CHANNELS])const;
 
+    /**
+     *  Read a single color channel at position (x,y).
+     *  If x or y are out of bounds a crash will likely occur.
+     *
+     *  @param x is the x position on the raster.
+     *  @param y is the y position on the raster.
+     *  @param d is the color channel index.  Should be any of {0,1,2,...,numChannels()}.
+     *  @return the pixel value at location (x,y) channel d.
+     */
     PIXEL_T readPixelSingleComponent(int x, int y, int d)const;
 
+    /**
+     *  Copy data from the image buffer at y location y into the buffer "out."  The 
+     *  buffer "out" should be allocated by the callee and should have at least:
+     *  sizeof(PIXEL_T) * width() * 3 bytes.
+     *
+     *  @param y is the y index of the scanline.
+     *  @param out is where the scanline is copied to.
+     */
     void getScanline(int y, PIXEL_T* out)const;
 
     /**
@@ -80,6 +102,11 @@ public:
      */
     int height()const;
 
+    /**
+     *  @return the number of channels in the image.
+     */
+    int numChannels()const;
+
     void range(PIXEL_T& minVal, PIXEL_T& maxVal)const;
 
     PIXEL_T minVal()const;
@@ -94,7 +121,7 @@ public:
     //only the image size, max, and min are printed
     #define VERBOSE_PRINT_ALL_PIXELS
 
-    //TODO: Figure out how to get a template friend to go belo the class def...
+    //TODO: Figure out how to get a template friend to go below the class def...
     friend std::ostream& operator<<(std::ostream& os,
         const Image<PIXEL_T,N_CHANNELS>& hdr)
     {
@@ -175,7 +202,8 @@ inline int Image<PIXEL_T,N_CHANNELS>::width()const{ return w; }
 template<typename PIXEL_T, int N_CHANNELS>
 inline int Image<PIXEL_T,N_CHANNELS>::height()const{ return h; }
 
-
+template<typename PIXEL_T, int N_CHANNELS>
+inline int Image<PIXEL_T, N_CHANNELS>::numChannels()const{ return N_CHANNELS; }
 
 template<typename PIXEL_T, int N_CHANNELS>
 inline PIXEL_T Image<PIXEL_T,N_CHANNELS>::minVal()const{
@@ -197,6 +225,7 @@ inline int Image<PIXEL_T,N_CHANNELS>::totalPix()const{ return w * h * N_CHANNELS
 
 template<typename PIXEL_T, int N_CHANNELS>
 void Image<PIXEL_T,N_CHANNELS>::getScanline(int y, PIXEL_T* out)const{
+    Assert(out != NULL);
     const int scanlineStart = ((y * w) * N_CHANNELS);
     memcpy((void*)out, (void*) (pixels + scanlineStart), w * N_CHANNELS * sizeof(PIXEL_T));
 }

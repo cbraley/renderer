@@ -1,6 +1,9 @@
 TODO:
 
     -Include a factory for spectral data so we can do things like get a black spectra etc.
+    -Rewrite spectrum so that we use a maximum of N samples(N is an uint template param) and allocate on the stack.
+    This will remove dynamic allocations.
+    -Vectorize spectral ops.
     -Remove Connely Barne's writing PFM code
 
 

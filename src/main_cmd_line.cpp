@@ -37,8 +37,6 @@ static float zFar  = Constants::MAX_FLOAT_VAL;
 static int spp     = 300;
 
 
-
-
 int main(int argc, char** argv){
 
     //Read command line params
@@ -106,7 +104,7 @@ int main(int argc, char** argv){
     if(StringUtils::endsWith(outName, ".pfm")){
         std::cout << "Skipping tone mapping and saving an HDR image directly..." << std::endl;
 
-        bool ok = ImageIO::writePFM(outName, im, "HDR pfm from colins command line renderer");
+        bool ok = ImageIO::writePFM(outName, im);
         if(!ok){
             std::cerr << "ERROR - could not write image: " << outName << std::endl;
         }

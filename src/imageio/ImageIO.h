@@ -7,6 +7,9 @@
 //--
 #include "imageio/ImageTypes.h"
 
+/**
+ *  Functions for reading and writing both LDR and HDR images.
+ */
 namespace ImageIO{
 
     /**
@@ -16,8 +19,7 @@ namespace ImageIO{
     bool writePPM(const std::string& fileName, const LDRImage* const img,
         const std::string& comment = "");
 
-    bool writePFM(const std::string& fileName, const HDRImage* const hdr,
-        const std::string& comment = "");
+    bool writePFM(const std::string& fileName, const HDRImage* const hdr);
 }
 
 #endif //IMAGE_IO_H
