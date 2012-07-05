@@ -1,14 +1,30 @@
 #include "imageio/ImageIO.h"
 //--
 #include <fstream>
+#include <sstream>
 //--
 #include "utils/Assert.h"
 #include "utils/Bits.h"
 
 
+static inline std::string getNewlineStr(){
+    std::stringstream ss;
+    ss << std::endl;
+    return ss.str();
+}
+
 bool ImageIO::writePPM(const std::string& fileName, const LDRImage* const img,
     const std::string& comment)
 {
+    Assert(img != NULL);
+
+    //Make sure the comment string has no newlines
+    //TODO: We really shoud ensure that there are no newlines for
+    //any platform's newline characters(ie no Windows, Linux, or Mac newlines)
+    if(comment.find(getNewlineStr()) != std::string::npos){
+        //Comment string contained newlines!
+        return false;
+    }
 
     std::fstream f(fileName.c_str(), std::fstream::out);
     if(!f){ //Make sure stream opened OK
@@ -30,8 +46,8 @@ bool ImageIO::writePPM(const std::string& fileName, const LDRImage* const img,
     f.close();
 
     //Open up a stream to write the raster data in binary
-    std::fstream fRaster(fileName.c_str(),  //Need to have app for "append"
-        std::fstream::out | std::fstream::binary | std::fstream::app);
+    std::fstream fRaster(fileName.c_str(),  //Need to have app for "append" and "ate" for at-end
+        std::fstream::out | std::fstream::binary | std::fstream::app  | std::fstream::ate);
     if(!fRaster){ //Make sure stream opened OK
         f.close();
         return false;

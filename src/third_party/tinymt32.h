@@ -19,9 +19,20 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-//TODO: This was added by me...why isn't it in there?
-#undef UINT32_C
 #define UINT32_C(c) c ## UL
+
+//TODO: This was added by me...why isn't it in there?
+//#undef UINT32_C
+//#define UINT32_C(c) c ## UL
+
+//TODO: tinymt requires some extra help to compile on Windows
+//from the README, it says:
+//TinyMT is written in C language, and it uses stdint.h and inttypes.h of c99.
+//gcc supports c99, use std=c99 option.
+//Visual Studio C/C++ does not support c99, but you can get stdint.h and inttypes.h for Visual Studio from msinttypes in Google code.
+//
+//...so eventually this msinttypes.h will have to be added
+
 
 #define TINYMT32_MEXP 127
 #define TINYMT32_SH0 1

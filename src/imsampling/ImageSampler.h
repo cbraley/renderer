@@ -41,9 +41,12 @@ public:
 
     ImageSampler(int imageWidth, int imageHeight, int sampsPerPixel);
 
-    inline int getImageWidth()const{ return imWidth; }
-    inline int getImageHeight()const{ return imWidth; }
-    inline int getSamplesPerPixel()const{ return sampsPerPix; }
+    /// \brief Get image width.
+    int getImageWidth()const;
+    ///\brief Get image height.
+    int getImageHeight()const;
+    /// \brief Get image number of samples per pixel.
+    int getSamplesPerPixel()const;
 
     /**
      *  Generate samples for a subwindow with INCLUSIVE indices.  So for a call:
@@ -82,7 +85,11 @@ public:
      */
     virtual Sample* genSamples()const;
     
-
 };
+
+
+inline int ImageSampler::getImageWidth()const{ return imWidth; }
+inline int ImageSampler::getImageHeight()const{ return imHeight; }
+inline int ImageSampler::getSamplesPerPixel()const{ return sampsPerPix; }
 
 #endif //IMAGE_SAMPLER_H

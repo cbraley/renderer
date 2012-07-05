@@ -18,6 +18,7 @@ SUITE(SpectrumTests){
 
     static const float EPS = 1e-6;
 
+    /*
     TEST(MakeSpecrumPlots){
 
         PlotStyle ps("CIE Color Matching Functions");
@@ -111,6 +112,7 @@ SUITE(SpectrumTests){
             "test/tmp/blackbodies_2.gnuplot");
         CHECK(ok);
     }
+    */
 
 
     TEST(SpectrumCopy){
@@ -407,6 +409,7 @@ SUITE(SpectrumTests){
     }
 
 
+    /*
     TEST(DiskIO){
         const float BB_MIN_NM = 300.0f;
         const float BB_MAX_NM = 1000.0f;
@@ -424,6 +427,7 @@ SUITE(SpectrumTests){
 
         CHECK_EQUAL(bb, bbcopy);
     }
+    */
 
     TEST(SpectrumToXYZ){
         Spectrum y2(Spectrum::CIE_Y_2_DEG);

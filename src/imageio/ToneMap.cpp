@@ -161,8 +161,8 @@ LDRImage* toneMapPercent(float percToBlack, float percToWhite, HDRImage* in, int
     }else{ //Random
         RNG rng;
         for(; cnt < samples ;){
-            const int i = rng.randomIntOC(0, in->width());
-            const int j = rng.randomIntOC(0, in->height());
+            const int i = rng.randomFloatCO() * in->width();
+            const int j = rng.randomFloatCO() * in->height();
             
             const float r = *((*in)(i,j,0));
             const float g = *((*in)(i,j,1));

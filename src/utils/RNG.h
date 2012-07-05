@@ -2,15 +2,31 @@
 #define RNG_H
 
 #include <ctime>
+//--
 #include "third_party/tinymt32.h"
-
+//--
+#include "utils/Assert.h"
 
 /**
- *  Random number generator.  Creates random numbers over  
- *  a half-open interval [begin, end) where end > begin.
+ *  Note - I am experiencing problems with tinymt32!  The function:
+ *  tinymt32_generate_float SHOULD return numbers in the range [0,1).
+ *  However, it very occasionally returns 1.0f, thus making its range:
+ *  [0,1].
  *
- *  Inspired by, and highly similar to, random number generation
- *  in PBRT 2 by Pharr and Humphreys.
+ *  When I use the function tinymt32_generate_float01 (which is supposed to 
+ *  have the same functionality, but be slightly slower), I get correct results.
+ *
+ *  Note that I have slightly modified the tinymt32.h file to work around issues 
+ *  with UINT32_C macros not being properly defined in g++.
+ */
+#define USE_UNION_TRICK //This MUST be defined for correct behavior!  See above!
+
+/**
+ *  Random number generator.  Can return uniform random numbers 
+ *  over the following intervals: [0,1), (0,1], and (0,1).
+ *      
+ *  Note - This class is not thread-safe across multiple threads!
+ *  It is REQUIRED to use one RNG per thread to avoid race conditions.
  *
  *  Internally uses a Mersenne twister implementation originally from 
  *  Takuji Nishimura and Makoto Matsumoto that was later ported to C++ by
@@ -26,26 +42,25 @@ public:
     RNG(unsigned int seedVal);
    
     /**
-     *  Initialize the RNG.  Defaults to using a seed based on the clock,
-     *  otherwise use a seed from a default array.
+     *  Initialize the RNG.  Defaults to using a deterministic seed, but can be seeded by the clock
+     *  as well.
      */
-    RNG(bool useTemporalSeed = true);
+    RNG(bool useTemporalSeed = false);
 
-    /*
-     *  Generate a random floating point number in the 
-     *  range (0,1].
-     */
-    float randomFloatOC()const;
+    /// \brief Generate a random floating point number in the range [0,1).
+    /// This arguably the most commonly used type of random number, and likely
+    /// the function you are looking for.
+    float randomFloatCO()const;
 
-
-    /*
-     *  Generate a random floating point number in the 
-     *  range (0,1).
-     */
+    /// \brief Generate a random floating point number in the range (0,1).
     float randomFloatOO()const;
 
-    int randomIntOC(int startIncl, int endExcl)const;
-    float randomFloatOC(float startInc, float endIncl)const;
+    /**
+     * Generate a random int in the range
+     * [begin, end).
+     */
+    int randomIntCO(int begin, int end)const;
+
 private:
     mutable tinymt32_t rng;
 
@@ -54,21 +69,12 @@ private:
     RNG(const RNG& other);
 };
 
-inline float RNG::randomFloatOC(float startInc, float endIncl)const{
-    return 7.0f; //TODO
-}
-
-inline int RNG::randomIntOC(int startIncl, int endExcl)const{
-    return 2; //TODO: DO
-}
-
-
 inline RNG::RNG(unsigned int seedVal){
     tinymt32_init(&rng, seedVal);
 }
 
 inline RNG::RNG(bool useTemporalSeed){
-    const uint32_t SEED = 16541;
+    uint32_t seed_array[5] = { 4546546, 5265656, 1013915, 13, 94634 };
     if(useTemporalSeed){
 
         //Get a random clock_t (usually an unsigned long)
@@ -82,19 +88,36 @@ inline RNG::RNG(bool useTemporalSeed){
         tinymt32_init(&rng, temporalSeed);
         
     }else{
-        tinymt32_init(&rng, SEED);
+        tinymt32_init_by_array(&rng, seed_array, 1);
     }
 }
 
+inline float RNG::randomFloatCO()const{
+#ifdef USE_UNION_TRICK
+    return tinymt32_generate_float01(&rng);
+#else
+    return tinymt32_generate_float(&rng);
+#endif
+}
 inline float RNG::randomFloatOO()const{
     return tinymt32_generate_floatOO(&rng);
 }
-inline float RNG::randomFloatOC()const{
-    return tinymt32_generate_floatOC(&rng);
+
+//Note - This does not work!
+//inline float RNG::randomFloatOC()const{
+//    return tinymt32_generate_floatOC(&rng);
+//}
+
+inline int RNG::randomIntCO(int begin, int end)const{
+    Assert(begin <= end);
+    const uint32_t randomNum = tinymt32_generate_uint32(&rng);
+    //absolute integer difference
+    const uint32_t absDiff = ((end - begin) >= 0 ? (end - begin) : -(end - begin));
+    const int offset = (int)(randomNum % absDiff);
+    const int ret = begin + offset;
+    Assert(ret >= begin && ret < end);
+    return ret;
 }
-
-
-
 
 
 #endif //RNG_H

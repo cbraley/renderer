@@ -4,13 +4,11 @@ TODO:
     -Rewrite spectrum so that we use a maximum of N samples(N is an uint template param) and allocate on the stack.
     This will remove dynamic allocations.
     -Vectorize spectral ops.
-    -Remove Connely Barne's writing PFM code
 
 
     -Pass a separate RNG to each thread and make thread safe!
     -TODO: Pass ones own RNG to each thread
     -Add atomics
-    -Redo pfm IO code
     -Work on thread contension issues
 
     Include renderertask for adding sample
@@ -42,4 +40,3 @@ TODO:
     -Remove all TODOs, including the song DL one, from files
     -Write code to transform Normals and Vectors
     -Write ==, !=, and = for all prim classes
-    -Remove CImg stuff so clang complete can work

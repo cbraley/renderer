@@ -216,74 +216,6 @@ Camera* genCornellBox(std::vector<Shape*>& geom, std::vector<Light*>& lights){
 
 
 
-std::vector<PhongMaterial> genRandomMaterials(int N){
-
-    std::vector<float> vals1, vals2, vals3, vals4;
-    //Greenish             Blueish                Redish                 //Delta Yellow
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //400
-    vals1.push_back(0.0f); vals2.push_back(0.1f); vals3.push_back(0.0f); vals4.push_back(0.0f); //410
-    vals1.push_back(0.0f); vals2.push_back(0.2f); vals3.push_back(0.0f); vals4.push_back(0.0f); //420
-    vals1.push_back(0.0f); vals2.push_back(0.3f); vals3.push_back(0.0f); vals4.push_back(0.0f); //430
-    vals1.push_back(0.0f); vals2.push_back(0.5f); vals3.push_back(0.0f); vals4.push_back(0.0f); //440
-    vals1.push_back(0.0f); vals2.push_back(0.4f); vals3.push_back(0.0f); vals4.push_back(0.0f); //450
-    vals1.push_back(0.0f); vals2.push_back(0.2f); vals3.push_back(0.0f); vals4.push_back(0.0f); //460
-    vals1.push_back(0.0f); vals2.push_back(0.1f); vals3.push_back(0.0f); vals4.push_back(0.0f); //470
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //480
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //490
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //500
-    vals1.push_back(0.1f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //510
-    vals1.push_back(0.3f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //520
-    vals1.push_back(0.5f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //530
-    vals1.push_back(0.4f); vals2.push_back(0.1f); vals3.push_back(0.0f); vals4.push_back(0.0f); //540
-    vals1.push_back(0.3f); vals2.push_back(0.2f); vals3.push_back(0.0f); vals4.push_back(0.0f); //550
-    vals1.push_back(0.1f); vals2.push_back(0.5f); vals3.push_back(0.0f); vals4.push_back(0.0f); //560
-    vals1.push_back(0.0f); vals2.push_back(0.2f); vals3.push_back(0.0f); vals4.push_back(0.0f); //570
-    vals1.push_back(0.0f); vals2.push_back(0.1f); vals3.push_back(0.0f); vals4.push_back(5.0f); //580
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //590
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.1f); vals4.push_back(0.0f); //600
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.1f); vals4.push_back(0.0f); //610
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.2f); vals4.push_back(0.0f); //620
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.3f); vals4.push_back(0.0f); //630
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.4f); vals4.push_back(0.0f); //640
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.4f); vals4.push_back(0.0f); //650
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.3f); vals4.push_back(0.0f); //660
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.2f); vals4.push_back(0.0f); //670
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.1f); vals4.push_back(0.0f); //680
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //690
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //700
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //710
-    vals1.push_back(0.0f); vals2.push_back(0.0f); vals3.push_back(0.0f); vals4.push_back(0.0f); //720
-
-
-    const Spectrum s1(vals1, 400.0f, 10.0f);
-    const Spectrum s2(vals2, 400.0f, 10.0f);
-    const Spectrum s3(vals3, 400.0f, 10.0f);
-    const Spectrum s4(vals4, 400.0f, 10.0f);
-    const Spectrum e(Spectrum::CIE_ILLUM_E);
-    const Spectrum s5 = e * (1.0f / 500.0f);
-
-
-    const float MUL_MIN = 50.0f;
-    const float MUL_MAX = 100.0f;
-    const float AMBIENT = 0.0f;
-    const int RAND_EXP_MIN = 5;
-    const int RAND_EXP_MAX = 100;
-
-    const Spectrum diffuseChoices[5]   = {s1,s2,s3,s4, s5};
-    const Spectrum specularChoices[10] = {s1,s2,s3,s4, e,e,e,e,e,e};
-
-    std::vector<PhongMaterial> materials;
-    RNG rng;
-    for(int i = 0; i < N; i++){
-        Spectrum randDiff = diffuseChoices [rng.randomIntOC(0, 5) ];
-        Spectrum randSpec = specularChoices[rng.randomIntOC(0, 10)];
-        float randMult = rng.randomFloatOC(MUL_MIN, MUL_MAX);
-        int randExp  = rng.randomIntOC(RAND_EXP_MIN, RAND_EXP_MAX);
-        materials.push_back( PhongMaterial(randDiff * randMult, e, randExp, AMBIENT) );
-    }
-
-    return materials;
-}
 
 static int cc = 0;
 std::vector<Shape*> genSphereFlake(int N, const std::vector<Shape*>& initScene, const Point& center, float rad, const std::vector<PhongMaterial>& mats, float rotY){
@@ -312,7 +244,7 @@ std::vector<Shape*> genSphereFlake(int N, const std::vector<Shape*>& initScene, 
 
     //Make new sphere with random material
     Shape* c = new Sphere(Transform::translate(Vector(center.x, center.y, center.z)), rad);
-    const int randIdx = rng.randomIntOC(0, (int) mats.size());
+    const int randIdx = rng.randomIntCO(0, (int) mats.size());
     //c->setMaterial( new PhongMaterial(mats[randIdx]) );
     s.push_back(c);
 

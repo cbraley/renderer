@@ -78,8 +78,8 @@ namespace GeomUtils{
     inline Vector randomVecOnSphere(){
         RNG rng;
         //TODO: Factor out the RNG
-        const float phi   = rng.randomFloatOC(0.0f, Constants::TWO_PI_FLOAT);
-        const float theta = rng.randomFloatOC(0.0f, Constants::TWO_PI_FLOAT);
+        const float phi   = rng.randomFloatCO() * Constants::TWO_PI_FLOAT;
+        const float theta = rng.randomFloatCO() * Constants::TWO_PI_FLOAT;
         return Vector(
             sinf(theta) * cosf(phi),
             sinf(theta) * sinf(phi),

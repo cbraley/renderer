@@ -207,8 +207,8 @@ Point Quad::randomPt()const{
     
     RNG rng; //TODO: Somehow factor out this stuff
 
-    const float randU = rng.randomFloatOC(0.0f, 1.0f);
-    const float randV = rng.randomFloatOC(0.0f, 1.0f);
+    const float randU = rng.randomFloatCO();
+    const float randV = rng.randomFloatCO();
 
     return v_00 +  (randU * u) + (randV * v);
 }

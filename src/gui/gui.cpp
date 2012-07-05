@@ -4,21 +4,20 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QToolBox>
-//--
-#include "gui/StatsPanel.h"
-#include "LayoutConstants.h"
-#include "gui/RenderViewWidget.h"
 
 static const char* WINDOW_TITLE = "Colin's Renderer";
 
-GUI::GUI(QWidget* parent) : 
-    QWidget(parent)
-{
+GUI::~GUI(){
+    delete stats; stats = NULL;
+    delete sceneView; sceneView = NULL;
+}
 
+GUI::GUI(QWidget* parent) : 
+    QWidget(parent), stats(NULL), sceneView(NULL)
+{
     //Create each component
-    StatsPanel* stats          = new StatsPanel(this);
-    //QCalendarWidget* sceneView = new QCalendarWidget(this);
-    RenderViewWidget* sceneView = new RenderViewWidget(this);
+    stats     = new StatsPanel(this);
+    sceneView = new RenderViewWidget(this);
 
     //TODO: Make real stuff here
     QPushButton* button1 = new QPushButton(this); button1->setText("Re-Render");
@@ -46,13 +45,6 @@ GUI::GUI(QWidget* parent) :
     //Right layout = Vertical layout with a bunch of controls
     QVBoxLayout* controlsLayout = new QVBoxLayout();
     controlsLayout->addWidget(tb);
-    /*
-    controlsLayout->addWidget(button1);
-    controlsLayout->addWidget(button2);
-    controlsLayout->addWidget(button3);
-    controlsLayout->addWidget(button4);
-    controlsLayout->addWidget(button5);
-    */
 
     //Main layout is a vbox layout
     QHBoxLayout* mainLayout = new QHBoxLayout();
@@ -61,4 +53,5 @@ GUI::GUI(QWidget* parent) :
     setLayout(mainLayout);
 
     setWindowTitle(WINDOW_TITLE);
+
 }

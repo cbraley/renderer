@@ -4,6 +4,107 @@
 #include "utils/GeomUtils.h"
 #include "math/Vector.h"
 #include "materials/BRDFGeom.h"
+//--
+#include <algorithm>
+
+
+//Implementation of light sampling code(LightSampler class) -------------------
+
+IntegratorHelpers::LightSampler::LightSampler(const Scene* scene, LightSamplingStrategy strat) :
+   renScene(scene), strategy(strat) 
+{
+    Assert(scene != NULL);
+    
+    numLights = scene->getNumLights();
+
+
+    //Build PDF and CDF
+    precomputePDFandCDF();
+}
+
+
+void IntegratorHelpers::LightSampler::precomputePDFandCDF(){
+    Assert(pdf.empty() && cdf.empty());
+
+    //Reserve space in PDF and CDF to avoid constantly growing the 
+    //internal array
+    pdf.reserve(renScene->getNumLights()    );
+    cdf.reserve(renScene->getNumLights() + 1); //CDF is one larger since 0 is included
+
+    //Find sum of total power...
+    float sumTotPow = 0.0f;
+    for(size_t i = 0; i < renScene->getNumLights(); i++){
+        const float currPow = renScene->getLight(i)->totalPower();
+        Assert(currPow >= 0.0f);
+        sumTotPow += currPow;
+    }
+    Assert(sumTotPow >= 0.0f);
+
+    //...use power sum to compute PDF and compute CDF
+    //normalized to [0,1] as opposed to [0, totalPow]
+    const float invTotalPow = 1.0f / sumTotPow; //* is faster than /
+    float probSum = 0.0f;
+    cdf.push_back(0.0f);
+    for(size_t i = 0; i < renScene->getNumLights(); i++){
+        const float currP = renScene->getLight(i)->totalPower() * invTotalPow;
+        pdf.push_back(currP);
+        probSum += currP;
+        cdf.push_back(probSum);
+    }
+    
+    //PDF and CDF are now tabulated; make sure that the resulting data
+    //is reasonable
+    Assert(MathUtils::checkClose<float>(probSum, 1.0f, 1e-6)); //CDF final value should be 1(with some FP error)
+    Assert(pdf.size() + 1 == cdf.size()); //CDF is one larger since 0 is included
+
+    //Make sure final CDF value is exactly 1 s.t no random numbers can be generated that are
+    //larger than the largest CDF value.  Due to FP issues, it is possible that the final CDF 
+    //value might be 1 - 1e-6.  Very rarely, our random number might be 1 - 1e-10.
+    //In this case, our random number would exceed our largest CDF value and after 
+    //sampleViaCDFInversionHelper is called the resulting index would cause an off-by-one
+    //error when choosing a light...
+    cdf[cdf.size()-1] = 1.0f;    
+}
+
+
+int IntegratorHelpers::LightSampler::sampleViaCDFInversionHelper(float uniformRand){
+    Assert(uniformRand >= 0.0f && uniformRand < 1.0f);
+
+    //Conduct a binary search along the CDF values to find bin closest to our value
+    std::vector<float>::iterator resultIter;
+    resultIter = std::lower_bound(cdf.begin(), cdf.end(), uniformRand);
+
+    //We can subtract iterators to yield the array index
+    //see the example here:  http://www.cplusplus.com/reference/algorithm/lower_bound/
+    const int foundIndex = int(resultIter - cdf.begin());
+    Assert(foundIndex >= 0 && foundIndex < ((int)renScene->getNumLights()));
+    return foundIndex;
+}
+
+Light* IntegratorHelpers::LightSampler::sampleLight(float uniformRand){
+    Assert(uniformRand >= 0.0f && uniformRand < 1.0f);
+
+    int index = -1;
+    switch(strategy){
+        case UNIFORM: //Choose any light with equal prob. for each
+            index = (int)(numLights * uniformRand);
+            break;
+        case POWER_HEURISTIC: //Importance sample according to power
+            index = sampleViaCDFInversionHelper(uniformRand);
+            break;
+        default:
+            //Error - We didn't account for an enum choice!
+            Assert(false);
+            return NULL;
+    }
+    
+    Assert(index < numLights || numLights == 0);
+
+    //Return NULL if there are no lights in the scene
+    return numLights != 0 ? renScene->getLight(index) : NULL;
+}
+
+//-----------------------------------------------------------------------------
 
 
 

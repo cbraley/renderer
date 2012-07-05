@@ -43,8 +43,9 @@ void JitteredSampler::getSamplesForSubwindow(int winLeft, int winRight,
                 Sample currSamp(centeredSamp);
 
                 //Jitter the sample by a random amount
-                const float randX = rng.randomFloatOC(-jitX, jitX);
-                const float randY = rng.randomFloatOC(-jitY, jitY);
+                const float randX = (rng.randomFloatOO() * 2.0f * jitX) - jitX;
+                const float randY = (rng.randomFloatOO() * 2.0f * jitY) - jitY;
+                //const float randY = rng.randomFloatOO(-jitY, jitY);
                 currSamp.x += randX;
                 currSamp.y += randY;
 
