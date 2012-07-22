@@ -15,6 +15,13 @@
  *
  * Client code is allowed to modify the publically accessable
  * minPoint and maxPoint variables.
+ *
+ * Note that some functions are implemented both as member functions as well 
+ * as static member functions.  The static member functions are there to make 
+ * allow STL algorithms that require function pointers(ex std::accumulate) usable without
+ *     -Writing 2 line boilerplate functions each time we want to use std::accumulate
+ *     -Using lambdas(I am not currently using C++0x so no lambdas)
+ *     -boost::bind (I am not using boost)
  */
 class BoundingBox{
 public:
@@ -65,7 +72,7 @@ public:
      *  Returns a reference to *this.
      */
     BoundingBox& Union(const BoundingBox& other);
-
+    
     /**
      *  Volume of box.
      */
@@ -91,6 +98,14 @@ public:
      *  @param corners is the array to update.
      */
     void getCorners(Point corners[8])const;
+
+    void splitX(BoundingBox& ret1, BoundingBox& ret2, float splitDist = 0.5f)const;
+    void splitY(BoundingBox& ret1, BoundingBox& ret2, float splitDist = 0.5f)const;
+    void splitZ(BoundingBox& ret1, BoundingBox& ret2, float splitDist = 0.5f)const;
+
+
+    /// \brief Compute cetroid(aka center of mass) of the bounding box.
+    Point centroid()const;
 
     /**
      *  Overloaded stream insertion operator.  Prints a bounding box.

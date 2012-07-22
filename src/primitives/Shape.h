@@ -69,6 +69,11 @@ public:
 
     virtual float surfaceArea()const = 0;
 
+    virtual bool inside(const BoundingBox& bbox)const{
+        //TODO: Reimplement for all classes
+        return true;
+    }
+
 private:
     Shape();
     Shape(const Shape& other);

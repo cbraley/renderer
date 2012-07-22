@@ -20,6 +20,10 @@ public:
 
     explicit Point(const Vector& vec);
 
+    //Adding points toghether is sometimes useful to find a center of mass
+    Point operator+(const Point& b)const;
+    Point& operator+=(const Point& b);
+
     //Operations
     Point operator+(const Vector& b)const;
 
@@ -32,7 +36,6 @@ public:
     bool hasNoNaNs()const;
 
     float distance(const Point& b)const;
-
 
     bool operator==(const Point& other)const;
     bool operator!=(const Point& other)const;
@@ -76,6 +79,18 @@ inline Point::Point(const Vector& vec) :
 inline Point Point::operator+(const Vector& b)const{
     return Point(x+b.x, y+b.y, z+b.z);
 }
+
+inline Point Point::operator+(const Point& b)const{
+    return Point(x+b.x, y+b.y, z+b.z);
+}
+inline Point& Point::operator+=(const Point& b){
+    x += b.x;
+    y += b.y;
+    z += b.z;
+    return *this;
+}
+
+
 
 inline Point& Point::operator+=(const Vector& b){
     x += b.x;

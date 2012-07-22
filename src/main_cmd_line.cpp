@@ -28,6 +28,8 @@
 #include "scenegen/SceneGen.h"
 #include "imsampling/GaussianFilter.h"
 
+#include "accel/BVH.h"
+
 
 //Scene variables
 static Transform camToWorld;
