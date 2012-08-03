@@ -23,6 +23,7 @@ public:
 
     enum PartitionStrategy{SPLIT_CENTER, SPLIT_SAH};
     BVH(PartitionStrategy strategy, size_t primitivesPerLeaf = 64);
+    PartitionStrategy getPartitionStrategy()const;
 
     virtual void buildAccelStructure(const std::vector<Shape*>& sceneData);
     
@@ -36,6 +37,24 @@ public:
 
     virtual ~BVH();
 
+    //BVHs can be traversed by any class that inherits from
+    //BVHVisitor
+    class BVHVisitor{
+    public:
+        virtual void visit(bool isLeaf, int level, const BoundingBox& aabb, size_t numPrims) = 0;
+    };
+    class PrintVisitor : public BVHVisitor{
+    public:
+        PrintVisitor(std::ostream& stream);
+        virtual void visit(bool isLeaf, int level, const BoundingBox& aabb, size_t numPrims);
+    private:
+        PrintVisitor(); PrintVisitor(const PrintVisitor& other);
+        std::ostream& os;
+    };
+
+    //Perform an in order traversal of the BVH
+    void traverse(BVHVisitor* visitor);
+
 private:
     BVH();
     BVH(const BVH& other);
@@ -45,6 +64,10 @@ private:
         BoundingBox bbox;
         Point centroid;
         ShapeWBound(Shape* shp, const BoundingBox& aabb);
+        friend std::ostream& operator<<(std::ostream& os, const ShapeWBound& swb){
+            os << "ShapeWBound: " << swb.bbox;
+            return os;
+        }
     }ShapeWBound;
 
     std::vector<ShapeWBound> scene; //Array of pointers to scene primitives and associated AABB's
@@ -68,7 +91,7 @@ private:
     typedef struct BVHNode{
         BoundingBox bbox; //Bounding box for this level
         bool isLeaf; //Is this a leaf node or not?
-       
+      
         BVHNode(const BoundingBox& boundingBox, bool isLeafNode);
         
         void setRightChild(BVHNode* node);
@@ -94,6 +117,9 @@ private:
     BVHNode* buildTreeRecursive(int level,
         std::vector<ShapeWBound>::iterator startIncl,
         std::vector<ShapeWBound>::iterator endIncl ); //Recursive helper for building trees
+
+    void traverseHelper(BVHVisitor* visitor, int level,
+        BVHNode* currRoot);
 
     //Helper function used by std::accumulate to do a "fold" operation from functional programming
     //unfortunately this has to be a static member function in order to use the private class ShapeWBound
@@ -152,6 +178,10 @@ private:
 };
 
 //Inline function definitions for BVH itself ----------------------------------
+inline BVH::PartitionStrategy BVH::getPartitionStrategy()const{
+    return strat;
+}
+
 inline size_t BVH::getNumShapes()const{
     Assert(root != NULL);
     return scene.size(); 
@@ -205,6 +235,6 @@ inline BVH::ShapeWBound::ShapeWBound(Shape* shp, const BoundingBox& aabb) :
     Assert(shape != NULL);
     centroid = aabb.centroid();
 }
- 
+
 
 #endif //BVH_H

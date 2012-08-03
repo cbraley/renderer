@@ -5,8 +5,20 @@
 #include "utils/Assert.h"
 
 std::ostream& operator<<(std::ostream& os, const BoundingBox& bbox){
-    os << "AABB( min = " << bbox.minPoint <<
-        ", max = " << bbox.maxPoint << ")";
+    
+    //Print something meaningful in the event of a zero volume degenerate 
+    //bounding box.  These boxes are never intersected by a ray.
+    if( 
+        bbox.minPoint == Point( Constants::MAX_FLOAT_VAL,
+        Constants::MAX_FLOAT_VAL,  Constants::MAX_FLOAT_VAL) && 
+        bbox.maxPoint == Point(-Constants::MIN_FLOAT_VAL,
+        -Constants::MIN_FLOAT_VAL, -Constants::MIN_FLOAT_VAL) )
+    {
+        os << "Degenerate(zero volume) AABB";
+    }else{
+        os << "AABB( min = " << bbox.minPoint <<
+            ", max = " << bbox.maxPoint << ")";
+    }
     return os;
 }
 

@@ -76,10 +76,13 @@ BVH::BVHNode* BVH::buildTreeRecursive(int level,
     std::vector<BVH::ShapeWBound>::iterator startIncl,
     std::vector<BVH::ShapeWBound>::iterator endIncl )
 {
+    std::cout << "btr level: " << level << std::endl;
+
     //We need to bound the primitives in the range [startIncl, endIncl]
     //within the std::vector scene
     //if there are <= primsPerLeaf primitives in this range, then we create a leaf node
     const int numPrimsInRange = std::distance(startIncl, endIncl);
+    std::cout << "\tnum prims = " << numPrimsInRange << std::endl;
     Assert(numPrimsInRange >= 0);
     const bool makingLeaf = numPrimsInRange <= primsPerLeaf;
 
@@ -91,6 +94,8 @@ BVH::BVHNode* BVH::buildTreeRecursive(int level,
     if(numPrimsInRange != 0){
         bbox = std::accumulate(startIncl, endIncl, bbox, BVH::unionBBoxes);
     }
+    std::cout << "\tbounding box: " << bbox << std::endl;
+
     //If no primitives are in range that indicates an edge case in which all the
     //primitives are in the other subtree and we should just build a degenerate 
     //bounding box and make it a leaf.
@@ -98,12 +103,14 @@ BVH::BVHNode* BVH::buildTreeRecursive(int level,
     std::vector<BVH::ShapeWBound>::iterator leftStart, rightStart, leftEnd, rightEnd;
  
     if(makingLeaf){ //Making a leaf node
+        std::cout << "Making a leaf." << std::endl;
         //Construct leaf
         BVH::BVHNode* newLeaf = new BVH::BVHNode(bbox, true);
         //Add data to the leaf
         //the data is a list of integers, where each integer is an index into 
         //the array of primitives
         newLeaf->prims = makePrimList(scene, startIncl, endIncl);
+        std::cout << "Made a leaf." << std::endl;
         return newLeaf;
     }else{ //Making an internal node
         //Allocate new node
@@ -119,6 +126,7 @@ BVH::BVHNode* BVH::buildTreeRecursive(int level,
             //We need to choose an axis to split on: X,Y, or Z
             //we choose based on the level in the tree
             const size_t axis = level % 3;
+            std::cout << "\taxis = " << axis << std::endl;
             BBoxCentroidSorter sorter(axis);
 
             //Find the item that would take the nth position in 
@@ -126,14 +134,32 @@ BVH::BVHNode* BVH::buildTreeRecursive(int level,
             //Note that this is faster than the O(n log(n))
             //from naive sorting
             std::vector<BVH::ShapeWBound>::iterator midIter;
-            //TODO: Find miditer
+            
+            //TODO: What should miditer be before this call?
+            midIter = startIncl + (numPrimsInRange/2);
+
             std::nth_element(startIncl, midIter, endIncl, sorter);
-           
+            std::cout << "\tcompleted the partition."  << std::endl;
+
             //Compute bounding boxes for each subtree
+            /*
+            std::cout << "\tBEGIN TEST CALLS." << std::endl;
+            BVH::ShapeWBound t1 = *startIncl;
+            std::cout << "\tstart bbox = " << t1 << std::endl;
+            BVH::ShapeWBound t2 = *midIter;
+            std::cout << "\tmid bbox = " << t2 << std::endl;
+            BVH::ShapeWBound t3 = *endIncl;
+            std::cout << "\tend bbox = " << t3 << std::endl;
+            std::cout << "\tEND TEST CALLS." << std::endl;
+            */
+
             BoundingBox leftBBox =
                 std::accumulate(startIncl, midIter-1, BoundingBox(), BVH::unionBBoxes);
+            std::cout << "\tleft subtree bbox = " << leftBBox << std::endl;
             BoundingBox rightBBox =
                 std::accumulate(midIter  , endIncl  , BoundingBox(), BVH::unionBBoxes);
+            std::cout << "\tright subtree bbox = " << rightBBox << std::endl;
+            std::cout << "\tcomputed subtree bounding boxes."  << std::endl;
             
             //Partition the resulting objects into "those in the left subtree"
             //and "those in the right subtree"
@@ -142,9 +168,7 @@ BVH::BVHNode* BVH::buildTreeRecursive(int level,
                 std::partition(startIncl, endIncl, bboxCheck);
 
             //Make sure that each primitive is in one of the two bounding boxes
-            //TODO:
-            
-
+            //TODO: Do this, but only in debug mode
 
         }else{ //We did not consider some strategy! (Should never happen)
             Assert(false);
@@ -155,6 +179,7 @@ BVH::BVHNode* BVH::buildTreeRecursive(int level,
         //Partition the primitives into each node
 
         //Recursively create children
+        std::cout << "\tabout to make 2 recursive calls." << std::endl;
         newInternal->setLeftChild (
             buildTreeRecursive(level + 1, leftStart , leftEnd ));
         newInternal->setRightChild(
@@ -167,7 +192,6 @@ BVH::BVH(PartitionStrategy strategy, size_t primitivesPerLeaf) :
     strat(strategy), primsPerLeaf(primitivesPerLeaf), root(NULL)
 {
     Assert(primsPerLeaf > 0);
-    Assert(strat == SPLIT_CENTER);
 }
 
 void BVH::buildAccelStructure(const std::vector<Shape*>& sceneData){
@@ -203,4 +227,56 @@ BVH::~BVH(){
     delete root; //This is OK since delete NULL is fine
 }
 
+
+void BVH::traverseHelper(BVH::BVHVisitor* visitor, int level,
+    BVHNode* currRoot)
+{
+    Assert(visitor != NULL);
+    if(currRoot == NULL){
+        return;
+    }else{
+        const bool isLeaf = currRoot->isLeaf;
+        
+        if(!isLeaf){
+            traverseHelper(visitor, level + 1, currRoot->getLeftChild());
+        }
+
+        visitor->visit(
+            isLeaf,
+            level,
+            currRoot->bbox,
+            isLeaf ? currRoot->getNumPrims() : 0
+            );
+
+        if(!isLeaf){
+            traverseHelper(visitor, level + 1, currRoot->getRightChild());
+        }
+    }
+}
+
+void BVH::traverse(BVH::BVHVisitor* visitor){
+    traverseHelper(visitor, 0, root);
+}
+
+
+
+BVH::PrintVisitor::PrintVisitor(std::ostream& stream) : 
+    os(stream)
+{
+}
+
+void BVH::PrintVisitor::visit(bool isLeaf, int level, const BoundingBox& aabb,
+    size_t numPrims)
+{
+    //Print N spaces, where N is the current traversal depth
+    for(int i = 0; i < level; i++){
+        os << " ";
+    }
+
+    if(isLeaf){
+        os << level << ": " << "leaf, " << numPrims << " primitives." << std::endl;
+    }else{
+        os << level << ": " << aabb << std::endl;
+    }
+}
 

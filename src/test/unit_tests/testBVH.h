@@ -24,14 +24,31 @@ SUITE(BVHTests){
             Point(0,-8,2),
             Point(1,-3,3)
             );
-        BVH bvh(BVH::SPLIT_CENTER, 1);
+        CHECK(tri1 != NULL);
+        CHECK(tri2 != NULL);
+        CHECK(tri3 != NULL);
 
-        std::vector<Shape*> shapes;
-        shapes.push_back(tri1);
-        shapes.push_back(tri2);
-        shapes.push_back(tri3);
+        try{
+            std::cout << "A" << std::endl;
+            BVH bvh(BVH::SPLIT_CENTER, 1);
+            CHECK(bvh.getPartitionStrategy() == BVH::SPLIT_CENTER);
 
-        bvh.buildAccelStructure(shapes);
+            std::vector<Shape*> shapes;
+            shapes.push_back(tri1);
+            shapes.push_back(tri2);
+            shapes.push_back(tri3);
+            std::cout << "B" << std::endl;
+
+            bvh.buildAccelStructure(shapes);
+            std::cout << "C" << std::endl;
+
+            BVH::PrintVisitor* v = new BVH::PrintVisitor(std::cout);
+            bvh.traverse(v);
+            delete v;
+        }catch(std::exception ex){
+            std::cerr << "Exception - : " << ex.what() << std::endl;
+            CHECK(false);
+        }
     }
 
 }
