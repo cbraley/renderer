@@ -27,12 +27,16 @@
 #include "imsampling/BoxFilter.h"
 #include "scenegen/SceneGen.h"
 #include "imsampling/GaussianFilter.h"
-
+//--
 #include "accel/BVH.h"
+
+//TODO: Note that this file is all temporary code for now
+//Right now I just have a hardcoded scene with a few parameters that can be adjusted via the command line
+//In the future, I intend to have this application accept a scene file, rendering parameters, and an output
+//file location on the command line
 
 
 //Scene variables
-static Transform camToWorld;
 static float fov   = 20.0f;
 static float zNear = 0.0f;
 static float zFar  = Constants::MAX_FLOAT_VAL;
@@ -41,30 +45,47 @@ static int spp     = 300;
 
 int main(int argc, char** argv){
 
-    //Read command line params
-    if(argc < 7){
-        std::cerr << "Usage: " << std::endl << argv[0] <<
-            " camX camY camZ width height outname.png rot(optional) num_bounces(optional)" << std::endl;
+    //Usage message
+    if(argc > 1 && strcmp(argv[1], "--help") == 0){
+        std::cerr << "Usage(all parameters optional): " << std::endl << argv[0] <<
+            " camX camY camZ imWidth imHeight outImage.png rot" << std::endl;
         return 0;
     }
-    float camX = atof(argv[1]);
-    float camY = atof(argv[2]);
-    float camZ = atof(argv[3]);
-    int width  = atoi(argv[4]);
-    int height = atoi(argv[5]);
-    std::cout << "Rendering a: " << width << " by " << height << " image." << std::endl;
-    std::string outName(argv[6]);
-    float rot = 0.0f;
-    if(argc >= 8){ rot = atof(argv[7]); }
-    int numBounces = 3;
-    if(argc >= 9){ numBounces = atof(argv[8]); }
-    camToWorld = Transform::translate(Vector(camX, camY, camZ));
+
+    //Parse command line parameters
+    int index = 1; //which arg are we currently parsing?
+    float camX, camY, camZ, rotDeg;
+    camX = camY = camZ = rotDeg = 0.0f;
+    int width, height;
+    width = height = 64;
+    std::string outName("out.png");
+    if(index < argc)
+        camX = atof(argv[index++]);
+    if(index < argc)
+        camY = atof(argv[index++]);
+    if(index < argc)
+        camZ = atof(argv[index++]);
+
+    if(index < argc)
+        width  = atoi(argv[index++]);
+    if(index < argc)
+        height = atoi(argv[index++]);
+    Assert(width > 0 && height > 0);
+    if(index < argc)
+        std::string outName(argv[6]);
+    if(index < argc)
+        rotDeg = atof(argv[index++]);
+    
+   
+    //Construct camera placement transformation
+    Transform moveTrans  = Transform::translate(Vector(camX, camY, camZ));
+    Transform rotTrans   = Transform::rotateZ(rotDeg);
+    Transform camToWorld = moveTrans * rotTrans;
 
     //Generate scene
     std::vector<Shape*> shapes;
     std::vector<Light*> lights;
     Camera* cam = SceneGen::genCornellBox(shapes, lights);
-    std::cout << *cam << std::endl;
 
     //Setup image plane and sampler
     const float pixelWidth  = 1.0f;

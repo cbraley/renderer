@@ -17,7 +17,6 @@ IntegratorHelpers::LightSampler::LightSampler(const Scene* scene, LightSamplingS
     
     numLights = scene->getNumLights();
 
-
     //Build PDF and CDF
     precomputePDFandCDF();
 }
@@ -122,6 +121,8 @@ Spectrum IntegratorHelpers::radianceDirect(const Scene* scene, const Ray& ray,
     const RaySurfIntersection& hit, const IntegratorHelpers::SpectralStrategy& ss)
 {
     //Memory for output spectrum
+    //TODO: Remove all dynamic memory allocations from rendering inner loop
+    //...for now this is still in here for east of implementation
     float* buf = new float[ss.numSpectralSamples];
     for(int i = 0; i < ss.numSpectralSamples; i++){
         buf[i] = 0.0f;

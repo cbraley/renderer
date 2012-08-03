@@ -19,8 +19,8 @@ cmake_minimum_required(VERSION 2.8.0)
 project(CBRender)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
-#set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Debug)
 
 #Folders with library modules
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} CMakeModules)
@@ -189,24 +189,30 @@ target_link_libraries(${CREN_APP_GUI} ${QT_LIBRARIES})
 #------------------------------------------------------------------------------
 #Set compilation flags
 #------------------------------------------------------------------------------
+
+#TODO: Set flags for clang and visual studio
+
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE}")
-#TODO: What are visual studios flags like?
 if (MSVC) #Visual Studio flags
+    message(STATUS "Compiler type is MSVC")
     set ( CMAKE_CXX_FLAGS "")
     set ( CMAKE_CXX_FLAGS_DEBUG "")
     set ( CMAKE_CXX_FLAGS_RELEASE  "" )
 endif ()
 
 if (CMAKE_COMPILER_IS_GNUCXX) #g++ flags
+    message(STATUS "Compiler type is GNUCXX")
     #set ( CMAKE_CXX_FLAGS "-Wall -m64 -Wextra -ansi -pedantic -msse3 -Wextra -Wno-long-long")
     #set ( CMAKE_CXX_FLAGS_DEBUG "-g -fno-inline -O0 -Wall -pg -ggdb")
     #set ( CMAKE_CXX_FLAGS_RELEASE  "-O3 -funroll-loops -ffast-math -finline-functions" )
-    set ( CMAKE_CXX_FLAGS "") 
-    set ( CMAKE_CXX_FLAGS_DEBUG "-O0")
-    set ( CMAKE_CXX_FLAGS_RELEASE  "-O3" )
+    set ( CMAKE_CXX_FLAGS "-Wall") 
+    set ( CMAKE_CXX_FLAGS_DEBUG "-O0 -pg -ggdb -fno-inline")
+    set ( CMAKE_CXX_FLAGS_RELEASE  "-O3 -funroll-loops -finline-functions -ffast-math -msse3" )
 endif ()
 
 if (CMAKE_COMPILER_IS_CLANG) #clang flags
+    message(STATUS "Compiler type is Clang")
+    set ( CMAKE_CXX_FLAGS "")
     set ( CMAKE_CXX_FLAGS "-fpermissive")
 endif()
 

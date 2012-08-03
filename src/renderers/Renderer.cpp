@@ -6,7 +6,7 @@
 #include "utils/Timer.h"
 
 //#define SILENT
-static const int PRINT_EVERY_X_PERCENT = 30;
+static const int PRINT_EVERY_X_PERCENT = 10;
 
 void Renderer::preprocess(const Scene* scene, const Integrator* integrator)const{}
 
@@ -48,20 +48,18 @@ HDRImage* Renderer::render(ImageSampler* sampler, Camera* cam, ImageSensor* ccd,
         //Print something every X percent to show progress(only when SILENT is not defined)
 #ifndef SILENT
         //TODO: This will cause race conditions upon parallelization; use atomics
-        if(i % printEvery == 0){
-            float perc = (float(i) / float(NS)) * 100.0f;
+        const float perc = (float(i) / float(NS)) * 100.0f;
+        if(i % printEvery == 0 && (int)perc != 0){
             timer.stop();
             long double timeSoFar = timer.getElapsedSeconds() / 60.0;
             timer.start();
-            std::cout << "\tPercent complete: " << int(perc) <<
+#TODO: Set flags for clang and visual studia            std::cout << "\tPercent complete: " << int(perc) <<
                 "(image plane sample " << i << " of " << NS << ")" << std::endl;
             std::cout << "\t\tTime so far: " << timeSoFar << " minutes." << std::endl;
             long double estLeft = (timeSoFar * 100.0f) / perc;
             std::cout << "\t\tEstimated time remaining: " << estLeft << " minutes." << std::endl;
         }
 #endif
-
-
 
 
         //Generate ray through the sample

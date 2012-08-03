@@ -10,22 +10,12 @@ DirectLightIntegrator::DirectLightIntegrator() {}
 Spectrum DirectLightIntegrator::radiance(
     const Scene* scene,const Ray& ray,
     const RaySurfIntersection& hit, 
-    Integrator::IntegratorData& iData
-    )const
+    Integrator::IntegratorData& iData )const
 {
     IntegratorHelpers::SpectralStrategy  strat;
     return 
         IntegratorHelpers::radianceEmitted(scene, ray, hit, strat) + //Emitted light + 
-        IntegratorHelpers::radianceDirect (scene, ray, hit, strat);  //
+        IntegratorHelpers::radianceDirect (scene, ray, hit, strat);  //Direct light
 
 }
 
-/*
-Spectrum DirectLightIntegrator::radiance(const Scene* scene, const Ray& ray,
-    const RaySurfIntersection& hit)const
-{
-    IntegratorHelpers::SpectralStrategy  strat;
-    return IntegratorHelpers::radianceDirect(scene, ray, hit, strat) + //A - 3 vertex paths
-        IntegratorHelpers::radianceEmitted(scene, ray, hit, strat);    //B - 2 vertex paths
-}
-*/

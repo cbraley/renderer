@@ -3,6 +3,10 @@
 
 #include "integrators/Integrator.h"
 
+/**
+ *  Integrator that only accounts for direct light that passes from the light source 
+ *  directly to the material surface.  No bounces are accounted for.
+ */
 class DirectLightIntegrator : public Integrator{
 public:
 
