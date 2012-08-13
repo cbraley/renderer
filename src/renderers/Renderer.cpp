@@ -53,7 +53,7 @@ HDRImage* Renderer::render(ImageSampler* sampler, Camera* cam, ImageSensor* ccd,
             timer.stop();
             long double timeSoFar = timer.getElapsedSeconds() / 60.0;
             timer.start();
-#TODO: Set flags for clang and visual studia            std::cout << "\tPercent complete: " << int(perc) <<
+            std::cout << "\tPercent complete: " << int(perc) <<
                 "(image plane sample " << i << " of " << NS << ")" << std::endl;
             std::cout << "\t\tTime so far: " << timeSoFar << " minutes." << std::endl;
             long double estLeft = (timeSoFar * 100.0f) / perc;
