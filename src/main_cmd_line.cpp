@@ -58,7 +58,7 @@ int main(int argc, char** argv){
     camX = camY = camZ = rotDeg = 0.0f;
     int width, height;
     width = height = 64;
-    std::string outName("out.png");
+    std::string outName("default.ppm");
     if(index < argc)
         camX = atof(argv[index++]);
     if(index < argc)
@@ -72,7 +72,7 @@ int main(int argc, char** argv){
         height = atoi(argv[index++]);
     Assert(width > 0 && height > 0);
     if(index < argc)
-        std::string outName(argv[6]);
+        outName = std::string(argv[index++]);
     if(index < argc)
         rotDeg = atof(argv[index++]);
     
