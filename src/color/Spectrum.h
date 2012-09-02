@@ -5,6 +5,9 @@
 #include <string>
 #include <ostream>
 
+//TODO: Remove define
+#define SPECTRUM_MAX_NUM_SAMPLES 1024
+
 /**
  *  Class for representing point sampled spectra.  Only
  *  works with a uniform sampling pattern.
@@ -25,7 +28,7 @@ public:
         CIE_ILLUM_D_65 , //Noon daylight (preferred over illum B)
         //CIE_ILLUM_D_75 , //North Sky daylight (preferred over illum C)
 
-        CIE_ILLUM_E    , //Equal enerey (constant 100)
+        CIE_ILLUM_E    , //Equal energy (constant 100)
 
         //F_1, ... ,F_12 = various flourescents
         CIE_ILLUM_F_1, CIE_ILLUM_F_2, CIE_ILLUM_F_3, CIE_ILLUM_F_4,
@@ -37,7 +40,7 @@ public:
     /// that matches a particular spectral matching curve.
     /// Xbar, Ybay, and Zbar functions from the CIE
     /// for various viewing angles.
-    /// Also the CIE reccomended luminous effeciency function in included for both
+    /// Also the CIE reccomended luminous efficiency function in included for both
     /// photopic("normal vision") and scoptic("low light") vision.
     enum SpectralMatchingCurve{
         CIE_X_2_DEG,
@@ -171,7 +174,6 @@ public:
     ///  0 is returned for out of range values.
     virtual float operator()(float nm)const;
 
-
     virtual float max()const;
     virtual float min()const;
 
@@ -204,11 +206,34 @@ public:
     //Overloaded stream insertion
     friend std::ostream& operator<<(std::ostream& os, const Spectrum& s);
 private:
+
+    //Private data
     int N;
-    float* data;
+    //float* data;
+    float data[SPECTRUM_MAX_NUM_SAMPLES];
     float minNm, maxNm, stepNm;
     void assertInvariant()const; //Used only in debug mode
 
+    //Helper code that allows us to overload various spectrum operators 
+    static Spectrum getResultSpectrum(const Spectrum& lhs, const Spectrum& rhs);
+    //with minimal code duplication in the implementation
+    /*
+    enum SpectrumSpectrumOpType{ADD,SUBTRACT,MULTIPLY,DIVIDE}; //Operators # that are applied (Spectrum # Spectrum)
+    template<SpectrumSpectrumOp>
+    class SpectrumSpectrumOp{
+    public:
+        Spectrum operator()(const Spectrum& a, const Spectrum& b)const;
+    private:
+        Spectrum getResultSpectrum(const Spectrum& lhs, const Spectrum& rhs){
+            Spectrum ret;
+            ret.stepNm = std::min<float>(lhs.stepNm, rhs.stepNm);
+            ret.minNm  = std::min<float>(lhs.minNm , rhs.minNm );
+            ret.maxNm  = std::max<float>(lhs.maxNm , rhs.maxNm );
+            ret.N      = (int)((endMax - beginMin)/(stepNmMin)) + 1;
+            return ret;
+        }
+    };
+    */
 
 };
 

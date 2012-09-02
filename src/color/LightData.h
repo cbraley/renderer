@@ -26,6 +26,7 @@ typedef struct Illuminant{
     float nmStep;
     int N;
 
+    //TODO(cbraley): Should I make this free mem?
     virtual ~Illuminant(){}
 }Illuminant;
 

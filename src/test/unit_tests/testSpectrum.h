@@ -18,6 +18,22 @@ SUITE(SpectrumTests){
 
     static const float EPS = 1e-6;
 
+    TEST(SpectrumPlot){
+        Spectrum lum_eff(Spectrum::CIE_LUMINOUS_EFFICIENCY_PHOTOPIC_1951);
+        Spectrum cie_x_10(Spectrum::CIE_X_10_DEG);
+        Spectrum mult = lum_eff * cie_x_10;
+        Spectrum add = lum_eff + cie_x_10;
+
+        SpectrumPlotter::SpectrumPlotData ploter(mult, "lum_eff_1951");
+        
+        SpectrumPlotter::PlotStyle ps("lum_eff_1951_prime");
+        std::vector<SpectrumPlotData> vec;
+        vec.push_back(ploter);
+        bool ok = SpectrumPlotter::writeGNUPlotCommandsToFile(
+            vec, ps, "plots.gnuplot");
+        CHECK(ok);
+    }
+
     /*
     TEST(MakeSpecrumPlots){
 

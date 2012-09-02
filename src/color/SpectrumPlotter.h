@@ -48,12 +48,8 @@ namespace SpectrumPlotter{
         float sampleRate;    //How often to sample?
     }PlotStyle;
 
-    
-
-
     std::string getGNUPlotCommands(const std::vector<SpectrumPlotData>& toPlot,
         const PlotStyle& ps);
-
 
     bool writeGNUPlotCommandsToFile(
         const std::vector<SpectrumPlotData>& toPlot,

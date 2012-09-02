@@ -16,7 +16,7 @@
 #include "utils/StringUtils.h"
 
 void Spectrum::assertInvariant()const{
-    Assert(N > 0);
+    Assert(N > 0 && N <= SPECTRUM_MAX_NUM_SAMPLES);
     Assert(data != NULL);
 
     if(N == 1){ //Special case for 1 sample
@@ -31,11 +31,12 @@ void Spectrum::assertInvariant()const{
 
 
 Spectrum::Spectrum(void) :
-    N(2), data(NULL), minNm(400.0f), maxNm(720.0f), stepNm(320.0f)
+    N(2), minNm(400.0f), maxNm(720.0f), stepNm(320.0f)
 {
-    data = new float[2];
     data[0] = data[1] = 1.0f;
     assertInvariant();
+
+    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
 }
 
 Spectrum::Spectrum(CIEReferenceIlluminant illum){
@@ -109,7 +110,9 @@ Spectrum::Spectrum(CIEReferenceIlluminant illum){
     //Load it
     Illuminant ill = getIlluminant(series, illumIndex);
     N = ill.N;
-    data = ill.data;
+    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
+    memcpy(data, ill.data, N * sizeof(float));
+    delete[] ill.data;
     minNm = ill.nmMin;
     maxNm = ill.nmMax;
     stepNm = ill.nmStep;
@@ -118,7 +121,7 @@ Spectrum::Spectrum(CIEReferenceIlluminant illum){
 }
 
 Spectrum::Spectrum(SpectralMatchingCurve sCurve) :
-    N(-1), data(NULL), minNm(-1.0f),
+    N(-1), minNm(-1.0f),
     maxNm(-1.0f), stepNm(-1.0f)
 {
 
@@ -153,7 +156,9 @@ Spectrum::Spectrum(SpectralMatchingCurve sCurve) :
 
     //Copy in the data
     N = cmf.N;
-    data = cmf.data;
+    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
+
+    memcpy(data, cmf.data, N * sizeof(float));
     minNm = cmf.nmMin;
     maxNm = cmf.nmMax;
     stepNm = cmf.nmStep;
@@ -164,15 +169,15 @@ Spectrum::Spectrum(SpectralMatchingCurve sCurve) :
 
 
 Spectrum::Spectrum(const std::vector<float>& values, float firstSampleNm,
-    float sampleStep) : N(values.size()), data(NULL), minNm(firstSampleNm),
+    float sampleStep) : N(values.size()), minNm(firstSampleNm),
     maxNm(firstSampleNm + float(values.size()-1) * sampleStep ),
     stepNm(sampleStep)
 {
     Assert(N > 0);
+    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
     Assert(stepNm > 0.0f);
     Assert(minNm <= maxNm);
 
-    data = new float[N];
     for(size_t i = 0; i < values.size(); i++){
         data[i] = values[i];
     }
@@ -181,10 +186,11 @@ Spectrum::Spectrum(const std::vector<float>& values, float firstSampleNm,
 
 Spectrum::Spectrum(float* vals, float minNmVal, float maxNmVal,
     float stepNmVal, int numSamps) :
-    N(numSamps), data(NULL), minNm(minNmVal), maxNm(maxNmVal), stepNm(stepNmVal)
+    N(numSamps), minNm(minNmVal), maxNm(maxNmVal), stepNm(stepNmVal)
 {
     Assert(vals != NULL);
-    data = new float[N];
+    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
+
     memcpy((void*)data, (void*)vals, N * sizeof(float));
     assertInvariant();
 }
@@ -203,22 +209,21 @@ inline static float planck(const float lambda, const float T){
 
 
 Spectrum::Spectrum(float Tkelvin, float minNmVal, float maxNmVal, int numSamples) :
-    N(numSamples), data(NULL), minNm(minNmVal), maxNm(maxNmVal),
+    N(numSamples), minNm(minNmVal), maxNm(maxNmVal),
     stepNm((maxNmVal - minNmVal)/float(numSamples-1))
 {
     Assert(Tkelvin > 0);
     Assert(minNmVal <= maxNmVal);
     Assert(numSamples > 1 || minNmVal || maxNmVal);
+    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
 
     if(minNmVal == maxNmVal && numSamples == 1){
         //Delta spectrum case
         N = 1;
         minNm = maxNm = minNmVal;
         stepNm = 0.0f;
-        data = new float[1];
         data[0] = planck(minNm, Tkelvin);
     }else{ //Normal case
-        data = new float[N];
         float tempNm = minNmVal;
         for(int i = 0; i < N; i++){
             data[i] = planck(tempNm, Tkelvin);
@@ -232,25 +237,25 @@ Spectrum::Spectrum(float Tkelvin, float minNmVal, float maxNmVal, int numSamples
 Spectrum::Spectrum(float val, float minnm, float maxnm) :
     N(2), minNm(minnm), maxNm(maxnm), stepNm(maxnm - minnm)
 {
-    data = new float[2];
     data[0] = data[1] = val;
     assertInvariant();
+    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
 }
 
 Spectrum::Spectrum(spectral_eval_function seval, float minNmVal,
     float maxNmVal, float stepVal) : N( int((maxNmVal - minNmVal)/stepVal) + 1 ),
-    data(NULL), minNm(minNmVal), maxNm(maxNmVal), stepNm(stepVal)
+    minNm(minNmVal), maxNm(maxNmVal), stepNm(stepVal)
 {
     Assert(seval != NULL);
     Assert(minNm <= maxNm);
     Assert(N > 0);
 
-    data = new float[N];
     float nm = minNm;
     for(int i = 0; i < N; i++){
         data[i] = (*seval)(nm);
         nm += stepNm;
     }
+    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
 }
 
 Spectrum Spectrum::fromDisk(const std::string& path, bool& ok){
@@ -283,7 +288,7 @@ Spectrum Spectrum::fromDisk(const std::string& path, bool& ok){
         //Parse
         if(N == -1){
             N = atoi(trimmedLine.c_str());
-            dataPtr = new float[N];
+            Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
         }else if(minWavelen == -1.0f){
             minWavelen = atof(trimmedLine.c_str());
         }else if(maxWavelen == -1.0f){
@@ -350,7 +355,7 @@ bool Spectrum::toDisk(const std::string& path)const{
 
 
 Spectrum::~Spectrum(){
-    delete[] data; data = NULL;
+    //delete[] data; data = NULL;
 }
 
 void Spectrum::toRGB(float& r, float& g, float& b, float K)const{
@@ -584,22 +589,18 @@ float Spectrum::norm(int normP)const{
 
 //Copy c-tor
 Spectrum::Spectrum(const Spectrum& other) :
-    N(other.N), data(NULL), minNm(other.minNm), maxNm(other.maxNm),
+    N(other.N), minNm(other.minNm), maxNm(other.maxNm),
     stepNm(other.stepNm)
 {
-    delete[] data; data = NULL;
-    data = new float[N];
     memcpy(data, other.data, N * sizeof(float));
 }
 
 
 Spectrum& Spectrum::operator=(const Spectrum& rhs){
-    delete[] data; data = NULL;
     N = rhs.N;
     minNm = rhs.minNm;
     maxNm = rhs.maxNm;
     stepNm = rhs.stepNm;
-    data = new float[N];
     memcpy(data, rhs.data, N * sizeof(float));
     return *this;
 }
@@ -639,7 +640,26 @@ Spectrum Spectrum::operator-(float scalar)const{
     return ret;
 }
 
+Spectrum Spectrum::getResultSpectrum(const Spectrum& lhs, const Spectrum& rhs){
+    Spectrum ret;
+    ret.stepNm = std::min<float>(lhs.stepNm, rhs.stepNm);
+    ret.minNm  = std::min<float>(lhs.minNm , rhs.minNm );
+    ret.maxNm  = std::max<float>(lhs.maxNm , rhs.maxNm );
+    ret.N      = (int)((ret.maxNm - ret.minNm)/(ret.stepNm)) + 1;
+    return ret;
+}
+
 Spectrum Spectrum::operator*(const Spectrum& rhs)const{
+
+    Spectrum ret = getResultSpectrum(*this, rhs);
+    float nm = ret.minNm;
+    for(int i = 0; i < N; i++){
+        ret.data[i] = (*this)(nm) * (rhs)(nm);
+        nm += ret.stepNm;
+    }
+    return ret;
+
+    /*
     float stepNmMin = std::min<float>(stepNm, rhs.stepNm);
     float beginMin  = std::min<float>(minNm, rhs.minNm);
     float endMax    = std::max<float>(maxNm, rhs.maxNm);
@@ -654,10 +674,22 @@ Spectrum Spectrum::operator*(const Spectrum& rhs)const{
     delete[] vals;
     Assert(N == ret.getNumSamples());
     return ret;
+    */
 }
 
 
 Spectrum Spectrum::operator/(const Spectrum& rhs)const{
+
+    Spectrum ret = getResultSpectrum(*this, rhs);
+    float nm = ret.minNm;
+    for(int i = 0; i < N; i++){
+        ret.data[i] = (*this)(nm) / (rhs)(nm);
+        nm += ret.stepNm;
+    }
+    return ret;
+
+
+    /*
     float stepNmMin = std::min<float>(stepNm, rhs.stepNm);
     float beginMin  = std::min<float>(minNm, rhs.minNm);
     float endMax    = std::max<float>(maxNm, rhs.maxNm);
@@ -672,10 +704,22 @@ Spectrum Spectrum::operator/(const Spectrum& rhs)const{
     delete[] vals;
     Assert(N == ret.getNumSamples());
     return ret;
+    */
 }
 
 
 Spectrum Spectrum::operator+(const Spectrum& rhs)const{
+    
+    Spectrum ret = getResultSpectrum(*this, rhs);
+    float nm = ret.minNm;
+    for(int i = 0; i < N; i++){
+        ret.data[i] = (*this)(nm) + (rhs)(nm);
+        nm += ret.stepNm;
+    }
+    return ret;
+
+    
+    /*
     float stepNmMin = std::min<float>(stepNm, rhs.stepNm);
     float beginMin  = std::min<float>(minNm, rhs.minNm);
     float endMax    = std::max<float>(maxNm, rhs.maxNm);
@@ -690,10 +734,22 @@ Spectrum Spectrum::operator+(const Spectrum& rhs)const{
     delete[] vals;
     Assert(N == ret.getNumSamples());
     return ret;
+    */
 }
 
 
 Spectrum Spectrum::operator-(const Spectrum& rhs)const{
+
+    Spectrum ret = getResultSpectrum(*this, rhs);
+    float nm = ret.minNm;
+    for(int i = 0; i < N; i++){
+        ret.data[i] = (*this)(nm) - (rhs)(nm);
+        nm += ret.stepNm;
+    }
+    return ret;
+
+
+    /*
     float stepNmMin = std::min<float>(stepNm, rhs.stepNm);
     float beginMin  = std::min<float>(minNm, rhs.minNm);
     float endMax    = std::max<float>(maxNm, rhs.maxNm);
@@ -708,6 +764,7 @@ Spectrum Spectrum::operator-(const Spectrum& rhs)const{
     delete[] vals;
     Assert(N == ret.getNumSamples());
     return ret;
+    */
 }
 
 float Spectrum::integrate()const{
@@ -812,7 +869,4 @@ std::ostream& operator<<(std::ostream& os, const Spectrum& s){
     }
     return os;
 }
-
-
-
 
