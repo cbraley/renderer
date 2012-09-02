@@ -4,6 +4,7 @@
 #include <UnitTest++.h>
 //--
 #include "color/SpectraCompare.h"
+#include <cmath>
 #include "color/Spectrum.h"
 
 SUITE(SpectraCompareTests){
@@ -30,8 +31,6 @@ SUITE(SpectraCompareTests){
 
         CHECK_CLOSE(rmsXX, 1.0f, EPS_VAL); //Should agree with itself
         CHECK_CLOSE(fabs(rmsXY - rmsYX), 0.0f, EPS_VAL); //Argument order should not matter
-
-
     }
 
 }

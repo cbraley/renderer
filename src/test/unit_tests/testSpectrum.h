@@ -8,6 +8,7 @@
 #include "math/Point.h"
 //--
 #include <vector>
+#include <cmath>
 #include <algorithm>
 #include <iostream>
 #include <sstream>
@@ -18,6 +19,7 @@ SUITE(SpectrumTests){
 
     static const float EPS = 1e-6;
 
+    /*
     TEST(SpectrumPlot){
         Spectrum lum_eff(Spectrum::CIE_LUMINOUS_EFFICIENCY_PHOTOPIC_1951);
         Spectrum cie_x_10(Spectrum::CIE_X_10_DEG);
@@ -33,6 +35,74 @@ SUITE(SpectrumTests){
             vec, ps, "plots.gnuplot");
         CHECK(ok);
     }
+    */
+
+
+    float spectrum_1(float wavelen){
+        return (wavelen >= 400.0f && wavelen <= 600.0f) ? 
+            2.0f : 0.0f;
+    }
+    float spectrum_2(float wavelen){
+        return (wavelen >= 500.0f && wavelen <= 700.0f) ? 
+            6.0f : 0.0f;
+    }
+    TEST(SpectrumMultDiffRanges){
+        //Spectrum s1(2.0f, 400.0f, 600.0f);
+        //Spectrum s2(6.0f, 500.0f, 700.0f);
+        Spectrum s1(spectrum_1, 400.0f, 700.0f, 0.5f);
+        Spectrum s2(spectrum_2, 400.0f, 700.0f, 0.5f);
+
+        Spectrum res = s1 + s2;
+        // Make sure ranges match
+        CHECK_EQUAL(400.0f, res.getMinNm());
+        CHECK_EQUAL(700.0f, res.getMaxNm());
+
+        //Make sure values match
+        for(float lambda = 400.0f; lambda <= 700.0f; lambda += 0.5f){
+            const float val = res(lambda);
+            float expected = 0.0f;
+            if(lambda >= 400.0f && lambda < 500.0f){
+                expected = 2.0f;
+            }else if(lambda >= 500.0f && lambda <= 600.0f){
+                expected = 8.0f;
+            }else if(lambda > 600.0f && lambda <= 700.0f){
+                expected = 6.0f;
+            }
+            CHECK_CLOSE(expected, val, EPS);
+        }
+    }
+
+    TEST(SpectrumRangesAppropriate){
+        Spectrum a(1.0f, 400.0f, 600.0f);
+        Spectrum b(2.0f, 600.0f, 700.0f);
+
+        CHECK_EQUAL(400.0f, (a+b).getMinNm());
+        CHECK_EQUAL(700.0f, (a+b).getMaxNm());
+        CHECK_EQUAL(400.0f, (b+a).getMinNm());
+        CHECK_EQUAL(700.0f, (b+a).getMaxNm());
+
+        CHECK_EQUAL(400.0f, (a-b).getMinNm());
+        CHECK_EQUAL(700.0f, (a-b).getMaxNm());
+        CHECK_EQUAL(400.0f, (b-a).getMinNm());
+        CHECK_EQUAL(700.0f, (b-a).getMaxNm());
+
+        CHECK_EQUAL(400.0f, (a*b).getMinNm());
+        CHECK_EQUAL(700.0f, (a*b).getMaxNm());
+        CHECK_EQUAL(400.0f, (b*a).getMinNm());
+        CHECK_EQUAL(700.0f, (b*a).getMaxNm());
+
+        CHECK_EQUAL(400.0f, (a/b).getMinNm());
+        CHECK_EQUAL(700.0f, (a/b).getMaxNm());
+        CHECK_EQUAL(400.0f, (b/a).getMinNm());
+        CHECK_EQUAL(700.0f, (b/a).getMaxNm());
+
+        CHECK_EQUAL(400.0f, (a*a).getMinNm());
+        CHECK_EQUAL(600.0f, (a*a).getMaxNm());
+
+        CHECK_EQUAL(600.0f, (b*b).getMinNm());
+        CHECK_EQUAL(700.0f, (b*b).getMaxNm());
+    }
+
 
     /*
     TEST(MakeSpecrumPlots){
@@ -326,7 +396,7 @@ SUITE(SpectrumTests){
 
     //Test spectral interpolation on a hard, densely sampled spectrum
     inline float sampleMe(float nm){
-        return fabsf(2000.0f * sinf(nm / 20.0f) / (nm*nm)  );
+        return fabs(2000.0f * sinf(nm / 20.0f) / (nm*nm)  );
     }
     TEST(SpectrumInterpHard){
         //Change these constants to modify the params of the test
@@ -353,7 +423,7 @@ SUITE(SpectrumTests){
         for(float nmTest = NM_START; nmTest < NM_END; nmTest += STEP_TEST){
             const float expected = sampleMe(nmTest);
             const float actual   = tough(nmTest);
-            const float err      = fabsf(expected - actual);
+            const float err      = fabs(expected - actual);
             CHECK(err < ERR_MAX);
         }
 
