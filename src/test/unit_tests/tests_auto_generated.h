@@ -6,6 +6,7 @@
 */
 #include "test/unit_tests/testSpectraCompare.h"
 #include "test/unit_tests/testSpectrum.h"
+#include "test/unit_tests/testImageSensor.h"
 /*
 #include "test/unit_tests/testPoint.h"
 #include "test/unit_tests/testTransform.h"
@@ -13,7 +14,6 @@
 #include "test/unit_tests/testRNG.h"
 #include "test/unit_tests/testColorUtils.h"
 #include "test/unit_tests/testMatrixDenseKS.h"
-#include "test/unit_tests/testImageSensor.h"
 #include "test/unit_tests/testJitteredSampler.h"
 #include "test/unit_tests/testBRDFGeom.h"
 #include "test/unit_tests/testSphere.h"

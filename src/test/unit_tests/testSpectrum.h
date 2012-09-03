@@ -27,7 +27,7 @@ SUITE(SpectrumTests){
         Spectrum add = lum_eff + cie_x_10;
 
         SpectrumPlotter::SpectrumPlotData ploter(mult, "lum_eff_1951");
-        
+
         SpectrumPlotter::PlotStyle ps("lum_eff_1951_prime");
         std::vector<SpectrumPlotData> vec;
         vec.push_back(ploter);
@@ -39,11 +39,11 @@ SUITE(SpectrumTests){
 
 
     float spectrum_1(float wavelen){
-        return (wavelen >= 400.0f && wavelen <= 600.0f) ? 
+        return (wavelen >= 400.0f && wavelen <= 600.0f) ?
             2.0f : 0.0f;
     }
     float spectrum_2(float wavelen){
-        return (wavelen >= 500.0f && wavelen <= 700.0f) ? 
+        return (wavelen >= 500.0f && wavelen <= 700.0f) ?
             6.0f : 0.0f;
     }
     TEST(SpectrumMultDiffRanges){
@@ -104,6 +104,22 @@ SUITE(SpectrumTests){
     }
 
 
+    TEST(TestSpectrumCopy){
+        float values[4] = {1.0f, 2.0f, 8.0f, 3.0f};
+        Spectrum s(values, 400.0f, 700.0f, 100.0f, 4);
+        Spectrum b(Spectrum::CIE_X_10_DEG);
+        b = s;
+        CHECK_CLOSE(1.0f, s(400.0f), EPS);
+        CHECK_CLOSE(2.0f, s(500.0f), EPS);
+        CHECK_CLOSE(8.0f, s(600.0f), EPS);
+        CHECK_CLOSE(3.0f, s(700.0f), EPS);
+
+        CHECK_CLOSE(1.0f, b(400.0f), EPS);
+        CHECK_CLOSE(2.0f, b(500.0f), EPS);
+        CHECK_CLOSE(8.0f, b(600.0f), EPS);
+        CHECK_CLOSE(3.0f, b(700.0f), EPS);
+    }
+
     /*
     TEST(MakeSpecrumPlots){
 
@@ -131,7 +147,7 @@ SUITE(SpectrumTests){
         pd.push_back(SpectrumPlotData(
             Spectrum(Spectrum::CIE_Z_10_DEG),
             "Z CMF - 10 Degree"));
-    
+
         bool ok = writeGNUPlotCommandsToFile(pd,ps,
             "test/tmp/CMFs.gnuplot");
         CHECK(ok);
