@@ -1,4 +1,4 @@
-#include "color/Spectrum.h"
+#include "color/DynamicSpectrum.h"
 
 #include <cstring>
 #include <cmath>
@@ -15,8 +15,8 @@
 #include "color/ColorUtils.h"
 #include "utils/StringUtils.h"
 
-void Spectrum::assertInvariant()const{
-    Assert(N > 0 && N <= SPECTRUM_MAX_NUM_SAMPLES);
+void DynamicSpectrum::assertInvariant()const{
+    Assert(N > 0);
     Assert(data != NULL);
 
     if(N == 1){ //Special case for 1 sample
@@ -30,16 +30,15 @@ void Spectrum::assertInvariant()const{
 }
 
 
-Spectrum::Spectrum(void) :
-    N(2), minNm(400.0f), maxNm(720.0f), stepNm(320.0f)
+DynamicSpectrum::DynamicSpectrum(void) :
+    N(2), data(NULL), minNm(400.0f), maxNm(720.0f), stepNm(320.0f)
 {
+    data = new float[2];
     data[0] = data[1] = 1.0f;
     assertInvariant();
-
-    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
 }
 
-Spectrum::Spectrum(CIEReferenceIlluminant illum){
+DynamicSpectrum::DynamicSpectrum(CIEReferenceIlluminant illum){
 
     ILLUMINANT_SERIES series;
     int illumIndex = -1;
@@ -110,9 +109,7 @@ Spectrum::Spectrum(CIEReferenceIlluminant illum){
     //Load it
     Illuminant ill = getIlluminant(series, illumIndex);
     N = ill.N;
-    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
-    memcpy(data, ill.data, N * sizeof(float));
-    delete[] ill.data;
+    data = ill.data;
     minNm = ill.nmMin;
     maxNm = ill.nmMax;
     stepNm = ill.nmStep;
@@ -120,8 +117,8 @@ Spectrum::Spectrum(CIEReferenceIlluminant illum){
     assertInvariant();
 }
 
-Spectrum::Spectrum(SpectralMatchingCurve sCurve) :
-    N(-1), minNm(-1.0f),
+DynamicSpectrum::DynamicSpectrum(SpectralMatchingCurve sCurve) :
+    N(-1), data(NULL), minNm(-1.0f),
     maxNm(-1.0f), stepNm(-1.0f)
 {
 
@@ -156,9 +153,7 @@ Spectrum::Spectrum(SpectralMatchingCurve sCurve) :
 
     //Copy in the data
     N = cmf.N;
-    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
-
-    memcpy(data, cmf.data, N * sizeof(float));
+    data = cmf.data;
     minNm = cmf.nmMin;
     maxNm = cmf.nmMax;
     stepNm = cmf.nmStep;
@@ -168,29 +163,28 @@ Spectrum::Spectrum(SpectralMatchingCurve sCurve) :
 
 
 
-Spectrum::Spectrum(const std::vector<float>& values, float firstSampleNm,
-    float sampleStep) : N(values.size()), minNm(firstSampleNm),
+DynamicSpectrum::DynamicSpectrum(const std::vector<float>& values, float firstSampleNm,
+    float sampleStep) : N(values.size()), data(NULL), minNm(firstSampleNm),
     maxNm(firstSampleNm + float(values.size()-1) * sampleStep ),
     stepNm(sampleStep)
 {
     Assert(N > 0);
-    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
     Assert(stepNm > 0.0f);
     Assert(minNm <= maxNm);
 
+    data = new float[N];
     for(size_t i = 0; i < values.size(); i++){
         data[i] = values[i];
     }
     assertInvariant();
 }
 
-Spectrum::Spectrum(float* vals, float minNmVal, float maxNmVal,
+DynamicSpectrum::DynamicSpectrum(float* vals, float minNmVal, float maxNmVal,
     float stepNmVal, int numSamps) :
-    N(numSamps), minNm(minNmVal), maxNm(maxNmVal), stepNm(stepNmVal)
+    N(numSamps), data(NULL), minNm(minNmVal), maxNm(maxNmVal), stepNm(stepNmVal)
 {
     Assert(vals != NULL);
-    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
-
+    data = new float[N];
     memcpy((void*)data, (void*)vals, N * sizeof(float));
     assertInvariant();
 }
@@ -208,22 +202,23 @@ inline static float planck(const float lambda, const float T){
 }
 
 
-Spectrum::Spectrum(float Tkelvin, float minNmVal, float maxNmVal, int numSamples) :
-    N(numSamples), minNm(minNmVal), maxNm(maxNmVal),
+DynamicSpectrum::DynamicSpectrum(float Tkelvin, float minNmVal, float maxNmVal, int numSamples) :
+    N(numSamples), data(NULL), minNm(minNmVal), maxNm(maxNmVal),
     stepNm((maxNmVal - minNmVal)/float(numSamples-1))
 {
     Assert(Tkelvin > 0);
     Assert(minNmVal <= maxNmVal);
     Assert(numSamples > 1 || minNmVal || maxNmVal);
-    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
 
     if(minNmVal == maxNmVal && numSamples == 1){
         //Delta spectrum case
         N = 1;
         minNm = maxNm = minNmVal;
         stepNm = 0.0f;
+        data = new float[1];
         data[0] = planck(minNm, Tkelvin);
     }else{ //Normal case
+        data = new float[N];
         float tempNm = minNmVal;
         for(int i = 0; i < N; i++){
             data[i] = planck(tempNm, Tkelvin);
@@ -234,38 +229,38 @@ Spectrum::Spectrum(float Tkelvin, float minNmVal, float maxNmVal, int numSamples
 }
 
 
-Spectrum::Spectrum(float val, float minnm, float maxnm) :
+DynamicSpectrum::DynamicSpectrum(float val, float minnm, float maxnm) :
     N(2), minNm(minnm), maxNm(maxnm), stepNm(maxnm - minnm)
 {
+    data = new float[2];
     data[0] = data[1] = val;
     assertInvariant();
-    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
 }
 
-Spectrum::Spectrum(spectral_eval_function seval, float minNmVal,
+DynamicSpectrum::DynamicSpectrum(spectral_eval_function seval, float minNmVal,
     float maxNmVal, float stepVal) : N( int((maxNmVal - minNmVal)/stepVal) + 1 ),
-    minNm(minNmVal), maxNm(maxNmVal), stepNm(stepVal)
+    data(NULL), minNm(minNmVal), maxNm(maxNmVal), stepNm(stepVal)
 {
     Assert(seval != NULL);
     Assert(minNm <= maxNm);
     Assert(N > 0);
 
+    data = new float[N];
     float nm = minNm;
     for(int i = 0; i < N; i++){
         data[i] = (*seval)(nm);
         nm += stepNm;
     }
-    Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
 }
 
-Spectrum Spectrum::fromDisk(const std::string& path, bool& ok){
+DynamicSpectrum DynamicSpectrum::fromDisk(const std::string& path, bool& ok){
     std::fstream fs(path.c_str(), std::ios::in);
     fs.precision( std::numeric_limits<double>::digits10 );
     const char COMMENT_CHAR = '#';
     if(! fs){
         fs.close();
         ok = false;
-        return Spectrum();
+        return DynamicSpectrum();
     }
 
     int N = -1;
@@ -288,7 +283,7 @@ Spectrum Spectrum::fromDisk(const std::string& path, bool& ok){
         //Parse
         if(N == -1){
             N = atoi(trimmedLine.c_str());
-            Assert(N <= SPECTRUM_MAX_NUM_SAMPLES && N > 0);
+            dataPtr = new float[N];
         }else if(minWavelen == -1.0f){
             minWavelen = atof(trimmedLine.c_str());
         }else if(maxWavelen == -1.0f){
@@ -304,7 +299,7 @@ Spectrum Spectrum::fromDisk(const std::string& path, bool& ok){
         }
     }while(! fs.eof() );
 
-    Spectrum ret(dataPtr, minWavelen, maxWavelen, stpWavelen, N);
+    DynamicSpectrum ret(dataPtr, minWavelen, maxWavelen, stpWavelen, N);
     delete[] dataPtr;
     ok = done;
     return ret;
@@ -313,7 +308,7 @@ Spectrum Spectrum::fromDisk(const std::string& path, bool& ok){
 /**
     *  Write a spectrum to disk.  Return true on success.
     */
-bool Spectrum::toDisk(const std::string& path)const{
+bool DynamicSpectrum::toDisk(const std::string& path)const{
     std::fstream fs(path.c_str(), std::ios::out);
     fs.precision( std::numeric_limits<double>::digits10 );
     if(! fs){
@@ -321,7 +316,7 @@ bool Spectrum::toDisk(const std::string& path)const{
         return false;
     }
 
-    fs << "#Spectrum file from Colin Braley's Renderer" << std::endl;
+    fs << "#DynamicSpectrum file from Colin Braley's Renderer" << std::endl;
     fs << "#Stores spectra with regularly spaced samples" << std::endl;
     time_t rawtime;
     time(&rawtime);
@@ -354,11 +349,11 @@ bool Spectrum::toDisk(const std::string& path)const{
 }
 
 
-Spectrum::~Spectrum(){
-    //delete[] data; data = NULL;
+DynamicSpectrum::~DynamicSpectrum(){
+    delete[] data; data = NULL;
 }
 
-void Spectrum::toRGB(float& r, float& g, float& b, float K)const{
+void DynamicSpectrum::toRGB(float& r, float& g, float& b, float K)const{
 
     //First, convert to XYZ
     float X,Y,Z;
@@ -369,17 +364,17 @@ void Spectrum::toRGB(float& r, float& g, float& b, float K)const{
     ColorUtils::XYZToRGB_sRGB(X,Y,Z, r,g,b);
 }
 
-void Spectrum::toXYZ(float& x, float& y, float& z, float K)const{
+void DynamicSpectrum::toXYZ(float& x, float& y, float& z, float K)const{
 
     //Load the XYZ curves
-    Spectrum X(Spectrum::CIE_X_10_DEG);
-    Spectrum Y(Spectrum::CIE_Y_10_DEG);
-    Spectrum Z(Spectrum::CIE_Z_10_DEG);
+    DynamicSpectrum X(DynamicSpectrum::CIE_X_10_DEG);
+    DynamicSpectrum Y(DynamicSpectrum::CIE_Y_10_DEG);
+    DynamicSpectrum Z(DynamicSpectrum::CIE_Z_10_DEG);
 
     //Take the products
-    Spectrum xProd = X * (*this);
-    Spectrum yProd = Y * (*this);
-    Spectrum zProd = Z * (*this);
+    DynamicSpectrum xProd = X * (*this);
+    DynamicSpectrum yProd = Y * (*this);
+    DynamicSpectrum zProd = Z * (*this);
 
     //Integrate area under curves, multiplying by K
     x = K * xProd.defIntegralTrapezoid(xProd.getMinNm(), xProd.getMaxNm());
@@ -387,15 +382,15 @@ void Spectrum::toXYZ(float& x, float& y, float& z, float K)const{
     z = K * zProd.defIntegralTrapezoid(zProd.getMinNm(), zProd.getMaxNm());
 }
 
-float Spectrum::getMinNm()const{
+float DynamicSpectrum::getMinNm()const{
     return minNm;
 }
-float Spectrum::getMaxNm()const{
+float DynamicSpectrum::getMaxNm()const{
     return maxNm;
 }
 
 
-std::vector<float> Spectrum::getSampleNms()const{
+std::vector<float> DynamicSpectrum::getSampleNms()const{
     std::vector<float> ret(N, 0.0f);
     float nm = getMinNm();
     const float nms = getSampleStep();
@@ -406,20 +401,20 @@ std::vector<float> Spectrum::getSampleNms()const{
     return ret;
 }
 
-int Spectrum::getNumSamples()const{
+int DynamicSpectrum::getNumSamples()const{
     return N;
 }
 
-float Spectrum::getSampleStep()const{
+float DynamicSpectrum::getSampleStep()const{
     return stepNm;
 }
 
-float Spectrum::operator[](int idx)const{
+float DynamicSpectrum::operator[](int idx)const{
     return data[idx];
 }
 
 //#define DEBUG_PRINT
-float Spectrum::operator()(float nm)const{
+float DynamicSpectrum::operator()(float nm)const{
 
 
 #ifdef DEBUG_PRINT
@@ -509,7 +504,7 @@ float Spectrum::operator()(float nm)const{
 }
 
 
-float Spectrum::max()const{
+float DynamicSpectrum::max()const{
     float c = std::numeric_limits<float>::min();
     for(int i = 0; i < N; i++){
         c = std::max<float>(c, data[i]);
@@ -518,7 +513,7 @@ float Spectrum::max()const{
 }
 
 
-float Spectrum::min()const{
+float DynamicSpectrum::min()const{
     float c = std::numeric_limits<float>::max();
     for(int i = 0; i < N; i++){
         c = std::min<float>(c, data[i]);
@@ -527,13 +522,13 @@ float Spectrum::min()const{
 }
 
 
-void Spectrum::setSample(int idx, float val){
+void DynamicSpectrum::setSample(int idx, float val){
     Assert(idx >= 0 && idx < N);
     data[idx] = val;
 }
 
 
-bool Spectrum::operator==(const Spectrum& other)const{
+bool DynamicSpectrum::operator==(const DynamicSpectrum& other)const{
     const float SPECTRA_CMP_TOL = 0.00001f;
 
     //See if the two spectra are so different we don't even need
@@ -558,12 +553,12 @@ bool Spectrum::operator==(const Spectrum& other)const{
     }
 }
 
-bool Spectrum::operator!=(const Spectrum& other)const{
+bool DynamicSpectrum::operator!=(const DynamicSpectrum& other)const{
     return !(*this == other);
 }
 
 
-float Spectrum::norm(int normP)const{
+float DynamicSpectrum::norm(int normP)const{
     Assert(normP > 0);
 
     float sum = 0.0f;
@@ -588,26 +583,30 @@ float Spectrum::norm(int normP)const{
 
 
 //Copy c-tor
-Spectrum::Spectrum(const Spectrum& other) :
-    N(other.N), minNm(other.minNm), maxNm(other.maxNm),
+DynamicSpectrum::DynamicSpectrum(const DynamicSpectrum& other) :
+    N(other.N), data(NULL), minNm(other.minNm), maxNm(other.maxNm),
     stepNm(other.stepNm)
 {
+    delete[] data; data = NULL;
+    data = new float[N];
     memcpy(data, other.data, N * sizeof(float));
 }
 
 
-Spectrum& Spectrum::operator=(const Spectrum& rhs){
+DynamicSpectrum& DynamicSpectrum::operator=(const DynamicSpectrum& rhs){
+    delete[] data; data = NULL;
     N = rhs.N;
     minNm = rhs.minNm;
     maxNm = rhs.maxNm;
     stepNm = rhs.stepNm;
+    data = new float[N];
     memcpy(data, rhs.data, N * sizeof(float));
     return *this;
 }
 
 //Operators
-Spectrum Spectrum::operator*(float scalar)const{
-    Spectrum ret(*this);
+DynamicSpectrum DynamicSpectrum::operator*(float scalar)const{
+    DynamicSpectrum ret(*this);
     for(int i = 0; i < N; i++){
         ret.data[i] = data[i] * scalar;
     }
@@ -615,16 +614,16 @@ Spectrum Spectrum::operator*(float scalar)const{
 }
 
 
-Spectrum Spectrum::operator/(float scalar)const{
-    Spectrum ret(*this);
+DynamicSpectrum DynamicSpectrum::operator/(float scalar)const{
+    DynamicSpectrum ret(*this);
     for(int i = 0; i < N; i++){
         ret.data[i] = data[i] / scalar;
     }
     return ret;
 }
 
-Spectrum Spectrum::operator+(float scalar)const{
-    Spectrum ret(*this);
+DynamicSpectrum DynamicSpectrum::operator+(float scalar)const{
+    DynamicSpectrum ret(*this);
     for(int i = 0; i < N; i++){
         ret.data[i] = data[i] + scalar;
     }
@@ -632,34 +631,15 @@ Spectrum Spectrum::operator+(float scalar)const{
 }
 
 
-Spectrum Spectrum::operator-(float scalar)const{
-    Spectrum ret(*this);
+DynamicSpectrum DynamicSpectrum::operator-(float scalar)const{
+    DynamicSpectrum ret(*this);
     for(int i = 0; i < N; i++){
         ret.data[i] = data[i] - scalar;
     }
     return ret;
 }
 
-Spectrum Spectrum::getResultSpectrum(const Spectrum& lhs, const Spectrum& rhs){
-    Spectrum ret;
-    ret.stepNm = std::min<float>(lhs.stepNm, rhs.stepNm);
-    ret.minNm  = std::min<float>(lhs.minNm , rhs.minNm );
-    ret.maxNm  = std::max<float>(lhs.maxNm , rhs.maxNm );
-    ret.N      = (int)((ret.maxNm - ret.minNm)/(ret.stepNm)) + 1;
-    return ret;
-}
-
-Spectrum Spectrum::operator*(const Spectrum& rhs)const{
-
-    Spectrum ret = getResultSpectrum(*this, rhs);
-    float nm = ret.minNm;
-    for(int i = 0; i < N; i++){
-        ret.data[i] = (*this)(nm) * (rhs)(nm);
-        nm += ret.stepNm;
-    }
-    return ret;
-
-    /*
+DynamicSpectrum DynamicSpectrum::operator*(const DynamicSpectrum& rhs)const{
     float stepNmMin = std::min<float>(stepNm, rhs.stepNm);
     float beginMin  = std::min<float>(minNm, rhs.minNm);
     float endMax    = std::max<float>(maxNm, rhs.maxNm);
@@ -670,26 +650,14 @@ Spectrum Spectrum::operator*(const Spectrum& rhs)const{
         vals[i] = (*this)(nm) * (rhs)(nm);
         nm += stepNmMin;
     }
-    Spectrum ret(vals, beginMin, endMax, stepNmMin, N);
+    DynamicSpectrum ret(vals, beginMin, endMax, stepNmMin, N);
     delete[] vals;
     Assert(N == ret.getNumSamples());
     return ret;
-    */
 }
 
 
-Spectrum Spectrum::operator/(const Spectrum& rhs)const{
-
-    Spectrum ret = getResultSpectrum(*this, rhs);
-    float nm = ret.minNm;
-    for(int i = 0; i < N; i++){
-        ret.data[i] = (*this)(nm) / (rhs)(nm);
-        nm += ret.stepNm;
-    }
-    return ret;
-
-
-    /*
+DynamicSpectrum DynamicSpectrum::operator/(const DynamicSpectrum& rhs)const{
     float stepNmMin = std::min<float>(stepNm, rhs.stepNm);
     float beginMin  = std::min<float>(minNm, rhs.minNm);
     float endMax    = std::max<float>(maxNm, rhs.maxNm);
@@ -700,26 +668,14 @@ Spectrum Spectrum::operator/(const Spectrum& rhs)const{
         vals[i] = (*this)(nm) / (rhs)(nm);
         nm += stepNmMin;
     }
-    Spectrum ret(vals, beginMin, endMax, stepNmMin, N);
+    DynamicSpectrum ret(vals, beginMin, endMax, stepNmMin, N);
     delete[] vals;
     Assert(N == ret.getNumSamples());
     return ret;
-    */
 }
 
 
-Spectrum Spectrum::operator+(const Spectrum& rhs)const{
-    
-    Spectrum ret = getResultSpectrum(*this, rhs);
-    float nm = ret.minNm;
-    for(int i = 0; i < N; i++){
-        ret.data[i] = (*this)(nm) + (rhs)(nm);
-        nm += ret.stepNm;
-    }
-    return ret;
-
-    
-    /*
+DynamicSpectrum DynamicSpectrum::operator+(const DynamicSpectrum& rhs)const{
     float stepNmMin = std::min<float>(stepNm, rhs.stepNm);
     float beginMin  = std::min<float>(minNm, rhs.minNm);
     float endMax    = std::max<float>(maxNm, rhs.maxNm);
@@ -730,26 +686,14 @@ Spectrum Spectrum::operator+(const Spectrum& rhs)const{
         vals[i] = (*this)(nm) + (rhs)(nm);
         nm += stepNmMin;
     }
-    Spectrum ret(vals, beginMin, endMax, stepNmMin, N);
+    DynamicSpectrum ret(vals, beginMin, endMax, stepNmMin, N);
     delete[] vals;
     Assert(N == ret.getNumSamples());
     return ret;
-    */
 }
 
 
-Spectrum Spectrum::operator-(const Spectrum& rhs)const{
-
-    Spectrum ret = getResultSpectrum(*this, rhs);
-    float nm = ret.minNm;
-    for(int i = 0; i < N; i++){
-        ret.data[i] = (*this)(nm) - (rhs)(nm);
-        nm += ret.stepNm;
-    }
-    return ret;
-
-
-    /*
+DynamicSpectrum DynamicSpectrum::operator-(const DynamicSpectrum& rhs)const{
     float stepNmMin = std::min<float>(stepNm, rhs.stepNm);
     float beginMin  = std::min<float>(minNm, rhs.minNm);
     float endMax    = std::max<float>(maxNm, rhs.maxNm);
@@ -760,18 +704,17 @@ Spectrum Spectrum::operator-(const Spectrum& rhs)const{
         vals[i] = (*this)(nm) - (rhs)(nm);
         nm += stepNmMin;
     }
-    Spectrum ret(vals, beginMin, endMax, stepNmMin, N);
+    DynamicSpectrum ret(vals, beginMin, endMax, stepNmMin, N);
     delete[] vals;
     Assert(N == ret.getNumSamples());
     return ret;
-    */
 }
 
-float Spectrum::integrate()const{
+float DynamicSpectrum::integrate()const{
     return defIntegralTrapezoid(getMinNm(), getMaxNm());
 }
 
-float Spectrum::defIntegralTrapezoid(float nmBegin, float nmEnd)const{
+float DynamicSpectrum::defIntegralTrapezoid(float nmBegin, float nmEnd)const{
 
     Assert(nmBegin <= nmEnd);
 
@@ -855,8 +798,8 @@ float Spectrum::defIntegralTrapezoid(float nmBegin, float nmEnd)const{
 }
 
 
-std::ostream& operator<<(std::ostream& os, const Spectrum& s){
-    os << "Spectrum: " << std::endl;
+std::ostream& operator<<(std::ostream& os, const DynamicSpectrum& s){
+    os << "DynamicSpectrum: " << std::endl;
     os << "\tN = " << s.N << std::endl;
     os << "\tminNm = " << s.minNm << std::endl;
     os << "\tmaxNm = " << s.maxNm << std::endl;
@@ -869,4 +812,7 @@ std::ostream& operator<<(std::ostream& os, const Spectrum& s){
     }
     return os;
 }
+
+
+
 
