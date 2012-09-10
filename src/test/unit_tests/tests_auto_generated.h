@@ -5,6 +5,7 @@
 #include "test/unit_tests/testStringUtils.h"
 */
 #include "test/unit_tests/testSpectraCompare.h"
+#include "test/unit_tests/testIrregularlySampledFunction.h"
 #include "test/unit_tests/testSpectrum.h"
 #include "test/unit_tests/testImageSensor.h"
 /*
