@@ -3,12 +3,13 @@
 /*
 #include "test/unit_tests/testVector.h"
 #include "test/unit_tests/testStringUtils.h"
-*/
 #include "test/unit_tests/testSpectraCompare.h"
+*/
 #include "test/unit_tests/testIrregularlySampledFunction.h"
+#include "test/unit_tests/testRegularlySampledSpectrum.h"
 #include "test/unit_tests/testSpectrum.h"
-#include "test/unit_tests/testImageSensor.h"
 /*
+#include "test/unit_tests/testImageSensor.h"
 #include "test/unit_tests/testPoint.h"
 #include "test/unit_tests/testTransform.h"
 #include "test/unit_tests/testMatrixUtils.h"
