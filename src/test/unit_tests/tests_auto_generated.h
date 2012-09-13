@@ -18,4 +18,3 @@
 #include "test/unit_tests/testImageIO.h"
 #include "test/unit_tests/testIntegratorHelpers.h"
 #include "test/unit_tests/testBVH.h"
-

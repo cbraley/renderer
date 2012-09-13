@@ -20,7 +20,8 @@ bool Vector::operator==(const Vector& other)const{
 bool Vector::operator!=(const Vector& b)const{ return !(*this == b); }
 
 
-bool Vector::isNormalized()const{
-    return getNormalized() == (*this);
+bool Vector::isNormalized(float maxDeviation)const{
+    Assert(maxDeviation >= 0.0f);
+    return fabs(1.0f - magnitude()) <= maxDeviation;
 }
 

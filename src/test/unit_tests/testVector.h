@@ -33,7 +33,38 @@ SUITE(VectorTests){
 
         b = -a;
         CHECK_CLOSE( MathUtils::radsToDegrees(a.angle(b)), 180.0f, DEGREE_EPS);
+    }
 
+    TEST(VectorScalarOps){
+        
+        Vector v(1.0f, 2.0f, 3.0f);
+        Vector vOrig(1.0f, 2.0f, 3.0f);
+        v *= 1.0f;
+        CHECK_EQUAL(1.0f, v.x);
+        CHECK_EQUAL(2.0f, v.y);
+        CHECK_EQUAL(3.0f, v.z);
+        v /= 2.0f;
+        CHECK_EQUAL(0.5f, v.x);
+        CHECK_EQUAL(1.0f, v.y);
+        CHECK_EQUAL(1.5f, v.z);
+
+        // The below binary operators wouldn't work if they were written
+        // as member functions
+        Vector b = 2.0f * v;
+        v = vOrig;
+        CHECK_EQUAL(v, b);
+
+        Vector c = 3.0f * v;
+        CHECK_EQUAL(3.0f, c.x);
+        CHECK_EQUAL(6.0f, c.y);
+        CHECK_EQUAL(9.0f, c.z);
+
+        // Vector / scalar is more often written as Vector * (1.0/sclar)
+        // but we allow the division operator...
+        Vector d = c / 3.0f;
+        CHECK_EQUAL(1.0f, d.x);
+        CHECK_EQUAL(2.0f, d.y);
+        CHECK_EQUAL(3.0f, d.z);
     }
 
 }
