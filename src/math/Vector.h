@@ -8,7 +8,6 @@
 #include "utils/Assert.h"
 #include "utils/Constants.h"
 
-
 /**
  *  Simple 3D vector class.  Floating point precision.
  *  Components can be manipulated directly via the public member variables

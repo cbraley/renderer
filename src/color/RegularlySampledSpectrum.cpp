@@ -51,7 +51,7 @@ RegularlySampledSpectrum::RegularlySampledSpectrum(const std::vector<float>& wav
 
 
 
-bool RegularlySampledSpectrum::getExtent(float& posBeginNm, float& posEndNm)const{
+bool RegularlySampledSpectrum::getNonZeroExtent(float& posBeginNm, float& posEndNm)const{
     posBeginNm = posEndNm = -999.0f;
 
     //TODO: Could be optimized...
