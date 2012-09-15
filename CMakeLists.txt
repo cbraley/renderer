@@ -19,8 +19,8 @@ cmake_minimum_required(VERSION 2.8.0)
 project(CBRender)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
-set(CMAKE_BUILD_TYPE Release)
-#set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 
 #Folders with library modules
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} CMakeModules)

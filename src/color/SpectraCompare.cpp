@@ -68,6 +68,8 @@ float SpectraCompare::specCompareGFC(const Spectrum* a, const Spectrum* b){
     }
 
     const float denominator = sqrtf(fabs(accumDenL)) * sqrtf(fabs(accumDenR));
+    //TODO: Remove
+    std::cout << accumDenL << " " << accumDenR << std::endl;
     const float ret = fabs(accumNum) / (denominator);
     Assert(ret >= 0.0f && ret <= 1.0f);
     return ret;

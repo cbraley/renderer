@@ -4,6 +4,8 @@
 #include <UnitTest++.h>
 //--
 #include "imsampling/ImageSensor.h"
+#include "imageio/ImageIO.h"
+#include "imageio/ToneMap.h"
 #include "color/Spectrum.h"
 #include "imsampling/ReconstructionFilter.h"
 #include "imsampling/GaussianFilter.h"
@@ -13,6 +15,34 @@
 
 SUITE(ImageSensorTests){
 
+    TEST(ImageSensorSpectaOps){
+
+        int IMW = 256;
+        int IMH = 256;
+        ReconstructionFilter* box_filter_11 = new BoxFilter(1.0f, 1.0f);
+        ImageSensor sensor(IMW, IMH, new Spectrum(Spectrum::CIE_ILLUM_E), box_filter_11);
+
+        float eps = .01f;
+        for(float x = 0.1f; x < 1.0f; x += eps){
+            for(float y = 0.1f; y < 1.0f; y += eps){
+                ImageSampler::Sample samp;
+                samp.x = x * ((float)IMW); samp.y = y * ((float)IMH);
+                
+                //float vals[3] = {x,y,1.0f};
+                float vals[3] = {x,y,1.0f};
+                Spectrum spec(vals, 400.0f, 700.0f, 100.0f, 3);
+
+                sensor.addSample(samp, &spec);
+            }
+        }
+        HDRImage* hdr = sensor.toImage(true);
+        LDRImage* ldr = ToneMap::toneMapMaxToWhite(hdr);
+
+        bool wok = ImageIO::writePPM("ldr.ppm", ldr, "");
+        CHECK(wok);
+    }
+
+    /*
     TEST(ImOut){
 
         //In this test we generate a single random sampling pattern
@@ -74,6 +104,7 @@ SUITE(ImageSensorTests){
             //delete im;
         }
     }
+    */
 
 }
 

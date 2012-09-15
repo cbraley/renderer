@@ -8,7 +8,7 @@
 //--
 #include "utils/Assert.h"
 #include "color/ColorConvMat.h"
-#include "color/Spectrum.h"
+//#include "color/Spectrum.h"
 
 /**
  *  Utility functions for conversion between various

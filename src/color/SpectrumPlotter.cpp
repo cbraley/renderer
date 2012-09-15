@@ -15,8 +15,8 @@ SpectrumPlotData::SpectrumPlotData(const Spectrum& s, const std::string& name) :
 {}
 
 
-    /// \brief POD Type encompassing the output look and global characteristics
-    /// of the plot.
+/// \brief POD Type encompassing the output look and global characteristics
+/// of the plot.
 PlotStyle::PlotStyle(const std::string& plotTitle) :
     title(plotTitle),
     xlabel("Wavelength (nm)"), ylabel(""),

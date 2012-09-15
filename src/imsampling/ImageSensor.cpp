@@ -8,7 +8,7 @@
 //TODO: Remove this before public release, for debugging only
 //...trying to track down bizarre pixels...
 //Maximum number of errors to store information for
-static const int MAX_ERRORS = 1024;
+static const size_t MAX_ERRORS = 1024;
 #define IS_MARK_ERROR_PIXELS
 #define IS_PRINT_ERROR_PIXELS
 
@@ -16,8 +16,7 @@ static const int MAX_ERRORS = 1024;
 //Helper functions-------------------------------------------------------------
 
 void ImageSensor::spectrumToXYZWithQE(Spectrum* ss,
-    float& X, float& Y, float& Z)const
-{
+    float& X, float& Y, float& Z)const{
     X = Y = Z = 0.0f;
     Spectrum resultSpec = *ss;
     if(resp != NULL){
@@ -29,11 +28,9 @@ void ImageSensor::spectrumToXYZWithQE(Spectrum* ss,
 }
 
 void ImageSensor::determineAffectedPixels(const ImageSampler::Sample& samp,
-    int& xs, int& xe, int& ys, int& ye)const
-{
+    int& xs, int& xe, int& ys, int& ye)const{
     const float halfW = filterExtentX * 0.5f;
     const float halfH = filterExtentY * 0.5f;
-
     continuousToIndices(samp.x - halfW, samp.y - halfH, xs, ys);
     continuousToIndices(samp.x + halfW, samp.y + halfH, xe, ye);
 }
