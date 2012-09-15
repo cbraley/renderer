@@ -4,6 +4,7 @@
 //--
 #include "math/MathUtils.h"
 #include "math/IrregularlySampledFunction.h"
+#include "color/SpectralData.h"
 
 
 bool RegularlySampledSpectrum::dataIsValid()const{

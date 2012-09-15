@@ -42,6 +42,9 @@ public:
     RegularlySampledSpectrum(const std::vector<float>& wavelengths,
         const std::vector<float>& sampleVals, const size_t nSamples);
 
+    //TODO(Colin): Include a constructor for initializing a spectrum with regularly sampled data...
+    //TODO(Colin): Include a constructor for initializing common spectral data
+
     /// \brief Copy constructor.
     RegularlySampledSpectrum(const RegularlySampledSpectrum& other);
 
@@ -139,8 +142,9 @@ public:
     float getMinValue()const;
 
 
+    //TODO(Colin): Overload common operators
 
-    
+
 
 
 
